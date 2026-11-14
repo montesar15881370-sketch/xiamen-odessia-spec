@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>厦门版 Odessia 开发 Spec v1.0</title>
+<style>
+  :root { --bg:#0f1419; --card:#1a2332; --accent:#00d4ff; --text:#e6edf3; --muted:#8b949e; --border:#30363d; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; margin: 0; padding: 0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 { font-size: 2.4em; margin-bottom: 0.2em; color: #fff; }
+  h1 span { color: var(--accent); }
+  .subtitle { color: var(--muted); font-size: 1.1em; margin-bottom: 2em; }
+  h2 { font-size: 1.6em; border-left: 4px solid var(--accent); padding-left: 12px; margin-top: 2.5em; color: #fff; }
+  h3 { color: var(--accent); margin-top: 1.8em; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin: 16px 0; }
+  .badge { display: inline-block; background: #1f6feb; color: #fff; font-size: 0.75em; padding: 2px 8px; border-radius: 12px; margin-right: 6px; }
+  .badge.green { background: #238636; }
+  .badge.orange { background: #d29922; }
+  .badge.red { background: #da3633; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+  th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+  th { background: #21262d; }
+  ul, ol { padding-left: 1.4em; }
+  li { margin: 6px 0; }
+  .toc { background: var(--card); border-radius: 12px; padding: 20px; margin-bottom: 30px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note { border-left: 4px solid #d29922; background: #1f2937; padding: 12px 16px; margin: 16px 0; border-radius: 0 8px 8px 0; }
+  .success { border-left-color: #238636; }
+  code { background: #21262d; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  .footer { margin-top: 60px; color: var(--muted); font-size: 0.85em; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>厦门版 <span>Odessia</span> 开发 Spec</h1>
+  <p class="subtitle">v1.0 · 基于 Odessia 六层架构 + LangGraph Harness + dsh 插件化思想 · 内部测试优先</p>
+
+  <div class="toc">
+    <strong>目录</strong>
+    <ul>
+      <li><a href="#overview">1. 项目定位与核心原则</a></li>
+      <li><a href="#architecture">2. 整体架构画面（Router-Worker）</a></li>
+      <li><a href="#layers">3. 六层详细 Spec</a></li>
+      <li><a href="#cost">4. 三套成本方案与切换条件</a></li>
+      <li><a href="#compliance">5. 合规清单（内部测试阶段可暂缓）</a></li>
+      <li><a href="#business">6. Inventory as a Service 商业层</a></li>
+      <li><a href="#next">7. 开发顺序与下一步</a></li>
+    </ul>
+  </div>
+
+  <h2 id="overview">1. 项目定位与核心原则</h2>
+  <div class="card">
+    <p><strong>目标</strong>：做厦门（含鼓浪屿）本地深度的 AI 旅行智能体。不做全球一句话订行程的复制品，做地头库存 + 真实导游经验的不可替代层。</p>
+    <p><strong>核心护城河</strong>：931 栋历史建筑档案、烟火气小吃与古早味踩点数据、不在 OTA 上架的好店与靠谱关系。</p>
+    <p><strong>原则</strong>：</p>
+    <ul>
+      <li>自建库优先，外部 MCP（高德、抖音本地生活、携程/飞猪）只做兜底，不得覆盖本地判断。</li>
+      <li>酒店下单走「意向单 + 人工确认」，不做实时扣库存裸奔平台。</li>
+      <li>Spec 先行，一切给 Bot / Cursor 的输入必须可执行、可验收。</li>
+      <li>内部关门测试阶段先跑通，不上线不办 ICP / 算法备案。</li>
+    </ul>
+  </div>
+
+  <h2 id="architecture">2. 整体架构画面（Harness）</h2>
+  <div class="card">
+    <p>想象一个旅行社前台：</p>
+    <ul>
+      <li><strong>Router</strong>（接待员）：无状态。只看哪个窗口空，把会话（session ID）扔过去。不办业务。</li>
+      <li><strong>Worker</strong>（窗口）：完整 LangGraph 实例。每个窗口后面是一套相同的工作站（图 + 节点 + 插件）。会话状态全在 Redis，窗口之间不共享私货。</li>
+      <li><strong>主循环子图</strong>：模型节点（Qwen 选工具）→ 工具执行节点（跑插件）→ 结果回填节点。循环直到模型说「答完了」。</li>
+      <li><strong>插件工具箱</strong>（六个核心）：酒店查询、餐厅查询、行程生成（harness 函数）、高德 MCP、微信 MCP、支付宝 MCP。</li>
+      <li><strong>记忆检索插件</strong>：统一入口，按场景路由到不同语义库。</li>
+      <li><strong>监控</strong>：每个节点挂 OTel span，旁路记录，不干预。</li>
+    </ul>
+    <p class="note">LangGraph 是骨架，dsh「一切皆插件」是血肉。工具、循环子图、检索入口都可插拔替换，主图不动。</p>
+  </div>
+
+  <h2 id="layers">3. 六层详细 Spec</h2>
+
+  <h3>3.1 模型层</h3>
+  <div class="card">
+    <span class="badge green">主模型</span> <strong>Qwen3.8 Omni Flash Realtime</strong><br>
+    语音 + function calling 一体，中文方言（含闽南语）覆盖最好，数据在北京/新加坡，成本极低。
+    <ul>
+      <li>备份语音通道：MOSS TTS + 转写（moss-tts / moss-transcribe）</li>
+      <li>图片理解重任务：Nex N2.6（异步子 agent）</li>
+      <li>视频实时：MOSS-VL-Realtime（第三期，走云 API，不本地 4090）</li>
+      <li>备选：GPT Realtime / Gemini Live（仅客户明确要求或主模型挂掉时切换，需重过合规）</li>
+    </ul>
+  </div>
+
+  <h3>3.2 工具层</h3>
+  <div class="card">
+    <ul>
+      <li><strong>酒店查询</strong>：自建轻量系统（约 20 家合作酒店结构化卡片）。下单生成意向单，人工确认后回传。不对接 PMS。</li>
+      <li><strong>餐厅查询</strong>：双库。自建踩点库优先（小吃、老字号、烟火气），外部联网兜底。</li>
+      <li><strong>行程生成</strong>：不是独立工具，是 harness 内函数。输入模板 + 槽位约束 + 实时库存，输出标准 JSON 行程。</li>
+      <li>无机票/动车工具，游客自订。</li>
+      <li>支付：微信 MCP + 支付宝 MCP，密钥与风控交给通道方。</li>
+      <li>高德 MCP 接入（POI、地理编码、路径规划）。美团外卖不接。</li>
+      <li>查询优先级写死：自建库 > 外部 MCP。</li>
+    </ul>
+  </div>
+
+  <h3>3.3 编排层（Harness）</h3>
+  <div class="card">
+    <ul>
+      <li>选型：LangGraph + LangSmith（开发期免费层）。</li>
+      <li>插件规范：每个工具独立文件，声明名称、JSON Schema、超时、降级返回值、监控指标。</li>
+      <li>循环子图可替换。</li>
+      <li>超时 3 秒，重试一次，再失败降级并打标（partial / no_exact_match）。</li>
+      <li>状态全进 Redis，TTL 30 分钟。</li>
+      <li>并发三档触发：日活会话 800 → 第二档；8000 → 第三档。Worker 水平扩展，无状态。</li>
+    </ul>
+  </div>
+
+  <h3>3.4 记忆层</h3>
+  <div class="card">
+    <p>基于 CoALA 框架 + LangGraph checkpointer / store + dsh 挂载思想。</p>
+    <ul>
+      <li><strong>五个独立语义库</strong>（共享 HNSW 向量基础设施）：
+        <ol>
+          <li>931 栋历史建筑档案库</li>
+          <li>小吃探店 / 烟火气库</li>
+          <li>文化典故 / 讲解库</li>
+          <li>打卡点库</li>
+          <li>古早味库</li>
+        </ol>
+      </li>
+      <li>统一检索插件：规划场景打规划库，讲解场景打讲解库，可并行。</li>
+      <li>混合检索：HNSW 向量 + BM25 关键词 + 结构化字段过滤，RRF 融合。</li>
+      <li>规划库维度参考：位置、性价比、评分、设施、服务、餐饮、房间、实时库存、团购价、实拍、资质、用户历史偏好、上下文（时间地点天气）、转化导向等。</li>
+      <li>讲解库维度：故事密度、文化代表性、在地人认同度、拍照出片度、适老适亲。</li>
+      <li>数据偏差处理：原档案高置信度优先；用户贡献作为旁注，标注「未经核实」。</li>
+    </ul>
+  </div>
+
+  <h3>3.5 视觉层</h3>
+  <div class="card">
+    <p><strong>两套方案</strong>：</p>
+    <ul>
+      <li><strong>行前（还没到厦门）</strong>：Odessia 式生成式 UI。PC 为主，agent 按需组装地图、房型图、价格表、多版本行程对比。</li>
+      <li><strong>行中（已在鼓浪屿 / 三丘田）</strong>：动态层 + 增强层。
+        <ul>
+          <li>动态层：高德 MCP 真实路网折线 + Leaflet / 高德 JS API 渲染，实时算路、标点、语音讲解。GPS + CLIP 融合定位（先粗定位缩小候选，再照片精匹配）。</li>
+          <li>增强层：仅对 931 栋中最有故事的约 50 栋做轻量空间锚点，输出结构化数据让雷鸟 / Rokid 等眼镜 SDK 自己渲染。你控制「看见什么」，不控制「怎么看见」。不做全岛 3D 预建模。</li>
+          <li>打卡点作为独立图层叠加在路网上。</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <h3>3.6 监控层</h3>
+  <div class="card">
+    <ul>
+      <li>OTel span 挂在每个节点（进图、出图、工具调用、LLM 调用）。</li>
+      <li>开发期：LangSmith 免费层（每月 5000 条 base trace）。</li>
+      <li>准生产后：可升级团队版 + 部分 OTel + 自托管 LangFuse 尝鲜。</li>
+      <li>最优终态：自托管 LangFuse，数据不出内网；敏感路径（支付、下单、前端展示）人工确认，后台逻辑可静默合并。</li>
+      <li>Engine（自动诊断开 PR）成本较高，准生产阶段再考虑。</li>
+    </ul>
+  </div>
+
+  <h2 id="cost">4. 三套成本方案</h2>
+  <div class="card">
+    <table>
+      <tr><th>阶段</th><th>触发条件</th><th>主要配置</th><th>月成本量级</th></tr>
+      <tr><td>低成本 MVP</td><td>内部测试 / 月活 &lt; 200</td><td>全走 Qwen + MOSS 云 API，LangSmith 免费层，Redis 小实例，无本地 GPU</td><td>几百元</td></tr>
+      <tr><td>准生产</td><td>月活 ≥ 200 + 首个付费客户</td><td>LangSmith 团队版，OTel 半接入，Redis 队列削峰，LangFuse 单机尝鲜</td><td>数千元</td></tr>
+      <tr><td>最优自愈</td><td>月活 ≥ 800 + 有真实故障模式</td><td>自托管 LangFuse，完整 OTel，企业级模型并发折扣，敏感路径人工闸门</td><td>按量 + 企业折扣</td></tr>
+    </table>
+    <p class="note success">前期一个人完全可承受。视频模型从第一天规划走云 API，不买 4090 当生产。</p>
+  </div>
+
+  <h2 id="compliance">5. 合规清单（内部测试阶段可暂缓）</h2>
+  <div class="card">
+    <ul>
+      <li><strong>ICP 备案</strong>：对外提供网站/小程序服务时必须。内部测试不对外可先不做。</li>
+      <li><strong>算法备案</strong>：生成合成类算法需在「互联网新技术新应用信息服务备案系统」（beian.cac.gov.cn）填报。自提供服务之日起 10 个工作日内。纯内部关门测试可暂缓。</li>
+      <li><strong>大模型登记</strong>：仅调用 API、未微调/蒸馏，走登记（比备案轻）。</li>
+      <li>拟人化交互合规（《人工智能拟人化互动服务管理暂行办法》）：高危操作人工确认、日志留痕。</li>
+      <li>生成合成内容标识：可见 + 隐式标识。</li>
+      <li>等保三级：对外上线时建议提前启动。</li>
+    </ul>
+    <p class="note">当前策略：先关门自己测试跑通三个核心工具 + 语音，真要放给游客用时再排期备案。</p>
+  </div>
+
+  <h2 id="business">6. Inventory as a Service 商业层（独立于六层）</h2>
+  <div class="card">
+    <p>更高维度：把厦门地头库存、931 栋档案、实时价格做成开放 API 层。任何模型、任何眼镜、任何 App 都能调。你不跟消费者抢关系，当基础设施收抽成。</p>
+    <ul>
+      <li>控制「看见什么」，不控制「怎么看见」。</li>
+      <li>输出结构化空间数据（锚点坐标、POI 标签、实时状态）给各家 SDK 渲染。</li>
+      <li>收入模型：预订佣金 + 私人定制介绍佣金 + 未来可能的 API 调用抽成。</li>
+    </ul>
+  </div>
+
+  <h2 id="next">7. 开发顺序与下一步</h2>
+  <div class="card">
+    <ol>
+      <li>起 LangGraph 骨架 + Redis 会话。</li>
+      <li>接入 Qwen Realtime + 三个核心工具插件（酒店、餐厅、行程生成）。</li>
+      <li>跑通最小语音对话：问需求 → 查库 → 出行程 JSON。</li>
+      <li>加高德 MCP 兜底。</li>
+      <li>补记忆库（先做 100 栋最有故事的 + 一批踩点餐厅）。</li>
+      <li>行前生成式 UI + 行中动态地图。</li>
+      <li>监控埋点与降级逻辑完善。</li>
+    </ol>
+    <p><strong>验收关键指标（MVP）</strong>：语音首包 &lt; 800ms，端到端 P95 &lt; 2s，工具调用成功率 ≥ 99%，降级率 &lt; 5%。</p>
+  </div>
+
+  <div class="footer">
+    厦门版 Odessia 开发 Spec v1.0 · 内部测试优先 · 基于长期对话决策整理<br>
+    仓库：<a href="https://github.com/montesar15881370-sketch/xiamen-odessia-spec" style="color:#00d4ff">github.com/montesar15881370-sketch/xiamen-odessia-spec</a>
+  </div>
+</div>
+</body>
+</html>

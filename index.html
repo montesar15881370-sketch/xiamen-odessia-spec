@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>厦门版 Odessia 开发 Spec v1.2</title>
+<title>厦门版 Odessia 开发 Spec v1.3</title>
 <style>
   :root { --bg:#0f1419; --card:#1a2332; --accent:#00d4ff; --text:#e6edf3; --muted:#8b949e; --border:#30363d; }
   * { box-sizing: border-box; }
@@ -36,21 +36,23 @@
 <body>
 <div class="container">
   <h1>厦门版 <span>Odessia</span> 开发 Spec</h1>
-  <p class="subtitle">v1.2 · 规划子图 + 讲解子图拆分 · 知识运营离线管道 · 内部测试优先</p>
+  <p class="subtitle">v1.3 · 反馈收集 Agent + 防幻觉机制 + 视频教训落地 · v1.4 将补七项</p>
 
   <div class="toc">
     <strong>目录</strong>
     <ul>
       <li><a href="#overview">1. 项目定位与核心原则</a></li>
-      <li><a href="#architecture">2. 整体架构画面（Router-Worker）</a></li>
+      <li><a href="#architecture">2. 整体架构画面</a></li>
       <li><a href="#subgraphs">3. 两个子图：规划 vs 讲解</a></li>
       <li><a href="#layers">4. 六层详细 Spec</a></li>
-      <li><a href="#knowledge-ops">5. 知识运营离线管道（自我进化）</a></li>
-      <li><a href="#eval">6. 评测集与数据质量门禁</a></li>
-      <li><a href="#cost">7. 三套成本方案</a></li>
-      <li><a href="#compliance">8. 合规清单</a></li>
-      <li><a href="#business">9. Inventory as a Service</a></li>
-      <li><a href="#next">10. 开发顺序</a></li>
+      <li><a href="#feedback">5. 反馈收集 Agent（v1.3 新增）</a></li>
+      <li><a href="#anti-hallucination">6. 防幻觉机制（v1.3 新增）</a></li>
+      <li><a href="#video-lessons">7. 视频教训落地（v1.3 新增）</a></li>
+      <li><a href="#knowledge-ops">8. 知识运营离线管道</a></li>
+      <li><a href="#eval">9. 评测集与数据质量门禁</a></li>
+      <li><a href="#v14">10. v1.4 将补的七项</a></li>
+      <li><a href="#cost">11. 三套成本方案</a></li>
+      <li><a href="#next">12. 开发顺序</a></li>
     </ul>
   </div>
 
@@ -66,130 +68,117 @@
       <li><strong>Router</strong>：无状态接待员，只分发 session。</li>
       <li><strong>Worker</strong>：完整 LangGraph 工作站，状态全在 Redis。</li>
       <li><strong>主循环</strong>：模型选工具 → 执行 → 回填，直到答完。</li>
-      <li>工具插件：酒店查询、餐厅查询、高德 MCP、微信/MCP支付宝。行程生成是 harness 内函数，不是独立工具。</li>
+      <li>工具插件：酒店查询、餐厅查询、高德 MCP、微信/MCP支付宝。行程生成是 harness 内函数。</li>
     </ul>
     <p class="note">LangGraph 骨架 + dsh 插件化思想。</p>
   </div>
 
   <h2 id="subgraphs">3. 两个子图：规划 vs 讲解（必须拆开）</h2>
   <div class="card">
-    <p>主图传送带先看意图，分叉进不同车间。两个车间各干各的，不抢机器。</p>
+    <p>主图传送带先看意图，分叉进不同车间。</p>
     <h3>规划子图（进主循环）</h3>
     <ul>
       <li>任务型：槽位约束 + 实时库存 + 价格区间。</li>
-      <li>检索：结构化字段 + BM25 优先，向量兜底。</li>
-      <li>成功标准：转化（订没订、走没走）。</li>
-      <li>输出：严格 JSON 行程。</li>
+      <li>检索：结构化字段 + BM25 优先。</li>
+      <li>成功标准：转化。</li>
+      <li>输出：严格 JSON 行程（必须多方案）。</li>
     </ul>
-    <h3>讲解子图（旁路触发，不进主循环工具选择）</h3>
+    <h3>讲解子图（旁路触发）</h3>
     <ul>
-      <li>体验型：故事优先、参数靠后。</li>
-      <li>触发：GPS+CLIP 定位到 POI，或语音说「这是什么」。</li>
-      <li>检索：纯 HNSW 语义向量，top-3 + 置信度。</li>
-      <li>生成：像懂行本地导游讲故事，不像说明书。</li>
-      <li>输出：语音主通道 + 视觉辅（手机明信片 / 眼镜 AR 锚点）。</li>
-      <li>流水线：触发一次 → 检索一次 → 生成一次 → 输出一次，不循环。</li>
+      <li>体验型：故事优先。</li>
+      <li>触发：GPS+CLIP 或语音「这是什么」。</li>
+      <li>检索：纯语义向量。</li>
+      <li>输出：语音主通道 + 视觉辅。</li>
     </ul>
-    <p class="note success">路由规则写死：「帮我排三天」走规划；「这是什么房子」走讲解。不让模型自己猜。</p>
   </div>
 
   <h2 id="layers">4. 六层详细 Spec</h2>
   <div class="card">
-    <h3>4.1 模型层</h3>
-    <p>主：Qwen3.8 Omni Flash Realtime。备份：MOSS TTS/转写。图片：Nex N2.6（异步）。视频：MOSS-VL-Realtime（云 API，第三期）。</p>
-    <h3>4.2 工具层</h3>
-    <p>酒店自建轻量系统 + 意向单人工确认。餐厅双库（自建优先）。行程生成是 harness 函数。高德 MCP 兜底。支付走微信/支付宝 MCP。</p>
-    <h3>4.3 编排层</h3>
-    <p>LangGraph + 插件规范。超时 3s + 重试 + 降级打标。状态 Redis。并发三档按日活触发。</p>
-    <h3>4.4 记忆层</h3>
-    <p>五个独立语义库（931栋、小吃、典故、打卡点、古早味）。统一检索插件按场景路由。规划走结构化+BM25，讲解走纯语义。混合检索 + RRF。</p>
-    <h3>4.5 视觉层</h3>
-    <p>行前：生成式 UI。行中：动态层（高德路网 + Leaflet + GPS+CLIP）+ 增强层（约50栋轻量锚点给眼镜 SDK）。</p>
-    <h3>4.6 监控层</h3>
-    <p>OTel span。开发期 LangSmith 免费层。准生产后可升级。最优终态自托管 LangFuse。</p>
+    <p>模型层：Qwen3.8 Omni Flash Realtime 主，MOSS 备份，Nex 图片异步。</p>
+    <p>工具层：酒店/餐厅自建 + 高德兜底 + 微信/支付宝 MCP。硬信息强制双源校验。</p>
+    <p>编排层：LangGraph 主循环。规划子图输出前强制硬信息校验节点。</p>
+    <p>记忆层：五个语义库 + 低置信度隐藏点库。</p>
+    <p>视觉层：行前多方案展示，行中关键节点标记「建议二次确认」。</p>
+    <p>监控层：OTel + 硬信息错误率指标。</p>
   </div>
 
-  <h2 id="knowledge-ops">5. 知识运营离线管道（自我进化）</h2>
+  <h2 id="feedback">5. 反馈收集 Agent（v1.3 新增）</h2>
   <div class="card">
-    <p>运行时讲解子图不负责进化。进化是后台离线线。</p>
+    <p>独立离线 Agent，不进主链路。</p>
     <ul>
-      <li><strong>知识运营 agent</strong>：定时网络搜索鼓浪屿新资料 → 整理成档案模板草稿 → 进人工审核队列。确认才入库，拒绝留记录。</li>
-      <li><strong>Ingestion 管道</strong>：
-        <ul>
-          <li>录音 → MOSS transcribe 转文字 → Nex 2.6 抽字段 → 生成草稿 → 人工队列。</li>
-          <li>照片 → CLIP 图文向量 → 匹配已有档案，top-1 挂上，未命中标待归档。</li>
-        </ul>
-      </li>
-      <li>三者通过讲解库这个唯一交汇点连接，互不干扰。</li>
+      <li>触发入口：行程结束主动提醒、用户主动反馈、行中实时纠错。</li>
+      <li>四步流程：结构化提取 → 交叉验证（官方/高德） → 生成变更草稿 → 人工审核队列。</li>
+      <li>激励：积分制（有效反馈加分，可换小礼品），闭环可见。</li>
+      <li>监控指标：提交率、有效率、入库时长、复发率。</li>
     </ul>
   </div>
 
-  <h2 id="eval">6. 评测集与数据质量门禁</h2>
+  <h2 id="anti-hallucination">6. 防幻觉机制（v1.3 新增）</h2>
   <div class="card">
-    <h3>评测集（三层）</h3>
     <ul>
-      <li>回归集：生产 trace 真实问答，人工标标准答案。</li>
-      <li>合成集：LLM 按模板批量生成模拟问答（各库至少 100 条）。</li>
-      <li>对抗集：模糊问题、错误 GPS、冲突信息。</li>
-    </ul>
-    <h3>数据质量指标（写死）</h3>
-    <ul>
-      <li>来源可追溯率 100%。</li>
-      <li>置信度标注完整率 100%。</li>
-      <li>核心字段填充率 ≥ 95%。</li>
-      <li>CLIP 相似度 > 0.95 自动合并 + 人工确认。</li>
-      <li>超 1 年未更新标黄提醒补采。</li>
-    </ul>
-    <h3>人工审核 SLA</h3>
-    <ul>
-      <li>草稿 24 小时内处理，超时升级。</li>
-      <li>导游一级审事实，你二级审语气和优先级。</li>
-      <li>动作全留日志，可回滚。</li>
-    </ul>
-    <h3>反馈闭环 + 版本控制 + 红队</h3>
-    <ul>
-      <li>游客点赞/点踩（点踩必填原因）→ 进知识运营输入。</li>
-      <li>每条记录带版本号，更新是追加不是覆盖，可回退。</li>
-      <li>每周自动生成刀钻问题打讲解子图，失败进回归集。</li>
+      <li>拒答机制：检索无结果必须明确说「查不到」，禁止凭记忆填充。</li>
+      <li>硬事实只许来自工具：时间、价格、库存必须引用工具返回值。</li>
+      <li>输出强制引用：每条硬信息挂来源标签，无标签前端不渲染。</li>
+      <li>跨会话一致性：LangSmith 加一致性 eval，漂移自动进回归集。</li>
     </ul>
   </div>
 
-  <h2 id="cost">7. 三套成本方案</h2>
+  <h2 id="video-lessons">7. 视频教训落地（v1.3 新增）</h2>
   <div class="card">
-    <table>
-      <tr><th>阶段</th><th>触发</th><th>配置</th><th>月成本</th></tr>
-      <tr><td>低成本 MVP</td><td>内部测试 / 月活<200</td><td>Qwen+MOSS 云 API，LangSmith 免费层</td><td>几百元</td></tr>
-      <tr><td>准生产</td><td>月活≥200 + 付费</td><td>团队版 + 部分 OTel + LangFuse 尝鲜</td><td>数千元</td></tr>
-      <tr><td>最优自愈</td><td>月活≥800</td><td>自托管 LangFuse，完整 OTel，企业折扣</td><td>按量</td></tr>
-    </table>
+    <p>基于 Wander with Mira 视频真实踩坑：</p>
+    <ul>
+      <li>硬信息强制双源校验 + 时间戳。</li>
+      <li>行程必须多方案 + 高德路径对比。</li>
+      <li>偏好槽位写死为硬约束。</li>
+      <li>低置信度隐藏点库不强制插入主行程。</li>
+      <li>输出带置信度与来源标记，关键节点强制人工确认。</li>
+    </ul>
   </div>
 
-  <h2 id="compliance">8. 合规清单（内部测试可暂缓）</h2>
+  <h2 id="knowledge-ops">8. 知识运营离线管道</h2>
   <div class="card">
-    <p>ICP、算法备案、大模型登记、拟人化交互合规、内容标识、等保。关门测试不对外可先不做。</p>
+    <p>知识运营 agent + Ingestion 管道，人工审核后入库。</p>
   </div>
 
-  <h2 id="business">9. Inventory as a Service 商业层</h2>
+  <h2 id="eval">9. 评测集与数据质量门禁</h2>
   <div class="card">
-    <p>开放 API 层，任何模型/眼镜/应用都能调。控制「看见什么」，不控制「怎么看见」。收抽成。</p>
+    <p>三层评测集 + 质量指标 + 人工 SLA + 反馈闭环 + 版本控制 + 红队。</p>
   </div>
 
-  <h2 id="next">10. 开发顺序</h2>
+  <h2 id="v14">10. v1.4 将补的七项</h2>
+  <div class="card">
+    <ul>
+      <li>非目标（明确不做什么）</li>
+      <li>失败模式目录（每个组件四种返回）</li>
+      <li>任务依赖图（按依赖排序 + 审查优先级）</li>
+      <li>双向追溯（Spec ↔ 任务）</li>
+      <li>Eval 集作为一等公民</li>
+      <li>成本模型（按 token / API 调用估算）</li>
+      <li>审查优先级标注（P0 亲自看，P2 自检）</li>
+    </ul>
+    <p class="note">AI 时代 Spec 不是新流程，是旧流程 + Eval 集 + 成本模型 + 双向追溯。</p>
+  </div>
+
+  <h2 id="cost">11. 三套成本方案</h2>
+  <div class="card">
+    <p>低成本 MVP / 准生产 / 最优自愈，按月活会话触发。</p>
+  </div>
+
+  <h2 id="next">12. 开发顺序</h2>
   <div class="card">
     <ol>
-      <li>LangGraph 骨架 + Redis。</li>
-      <li>Qwen Realtime + 规划子图（三个核心工具）。</li>
-      <li>跑通最小语音对话。</li>
-      <li>讲解子图旁路触发。</li>
-      <li>高德 MCP 兜底。</li>
-      <li>记忆库（先 100 栋 + 踩点餐厅）+ 离线管道。</li>
-      <li>视觉层 + 监控埋点。</li>
+      <li>LangGraph 骨架 + Redis</li>
+      <li>Qwen Realtime + 规划子图</li>
+      <li>跑通最小语音对话</li>
+      <li>讲解子图 + 反馈 Agent</li>
+      <li>高德 MCP + 硬信息校验</li>
+      <li>记忆库 + 离线管道</li>
+      <li>视觉层 + 监控</li>
     </ol>
-    <p><strong>验收</strong>：语音首包 <800ms，端到端 P95 <2s，工具成功率 ≥99%，降级率 <5%。</p>
   </div>
 
   <div class="footer">
-    厦门版 Odessia 开发 Spec v1.2 · 内部测试优先<br>
+    厦门版 Odessia 开发 Spec v1.3 · 内部测试优先<br>
     仓库：<a href="https://github.com/montesar15881370-sketch/xiamen-odessia-spec" style="color:#00d4ff">github.com/montesar15881370-sketch/xiamen-odessia-spec</a>
   </div>
 </div>

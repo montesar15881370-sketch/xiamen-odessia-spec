@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>厦门版 Odessia 开发规格文档 · 合并版 v2</title>
+<style>
+  :root { --bg:#0f1419; --card:#1a2332; --accent:#00d4ff; --text:#e6edf3; --muted:#8b949e; --border:#30363d; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; margin: 0; padding: 0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 { font-size: 2.4em; margin-bottom: 0.2em; color: #fff; }
+  h1 span { color: var(--accent); }
+  .subtitle { color: var(--muted); font-size: 1.1em; margin-bottom: 2em; }
+  h2 { font-size: 1.6em; border-left: 4px solid var(--accent); padding-left: 12px; margin-top: 2.5em; color: #fff; }
+  h3 { color: var(--accent); margin-top: 1.8em; }
+  h4 { color: #fff; margin-top: 1.4em; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin: 16px 0; overflow-x: auto; }
+  .layer { display: inline-block; color: #fff; font-size: 0.72em; font-weight: 600; padding: 2px 9px; border-radius: 12px; margin: 0 4px; vertical-align: middle; }
+  .l-top { background: #8957e5; }
+  .l-main { background: #1f6feb; }
+  .l-branch { background: #d29922; }
+  .l-sub { background: #238636; }
+  .comp { display: inline-block; border: 1px solid #3fb950; color: #3fb950; font-size: 0.7em; padding: 1px 8px; border-radius: 12px; margin: 0 4px; vertical-align: middle; font-weight: normal; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+  th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+  th { background: #21262d; }
+  ul, ol { padding-left: 1.4em; }
+  li { margin: 6px 0; }
+  a { color: var(--accent); }
+  .toc { background: var(--card); border-radius: 12px; padding: 20px; margin-bottom: 30px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .toc ul ul { font-size: 0.95em; }
+  .toc li { margin: 3px 0; }
+  .legend { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; }
+  .legend p { margin: 8px 0; }
+  .muted { color: var(--muted); font-size: 0.9em; }
+  blockquote { border-left: 4px solid #d29922; background: #1f2937; padding: 12px 16px; margin: 16px 0; border-radius: 0 8px 8px 0; }
+  blockquote p { margin: 6px 0; }
+  pre { background: #21262d; padding: 12px; border-radius: 8px; overflow-x: auto; }
+  code { background: #21262d; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  .back { text-align: right; font-size: 0.85em; margin: 16px 0 0; }
+  .back a { text-decoration: none; }
+  .footer { margin-top: 60px; color: var(--muted); font-size: 0.85em; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>厦门版 <span>Odessia</span> 开发规格文档</h1>
+  <p class="subtitle">合并版 v2 · 网页版 · 由 <code>consolidated-spec-v2.md</code> 生成</p>
+
+  <div class="legend">
+    <strong>层级图例</strong>
+    <p><span class="layer l-top">顶层</span>主线和子线共用的底座：<a href="#s4-1">4.1 模型层</a>、<a href="#s4-2">4.2 工具层</a></p>
+    <p><span class="layer l-main">主线</span>实时主链路及其直接支撑：路由器 → 工作节点 → 主循环 → <a href="#s3-1">3.1 规划子图</a>、编排 / 记忆 / 视觉 / 监控层、防幻觉机制，以及 <a href="#s10-3">10.3 成本与时延</a></p>
+    <p><span class="layer l-branch">分支线</span>从主线分出的分支：<a href="#s3-2">3.2 讲解子图</a></p>
+    <p><span class="layer l-sub">子线</span>主线之外的智能体和流程：<span class="comp">生图</span><a href="#s16-8-2">16.8.2</a>　<span class="comp">照片收集</span><a href="#s16-8">16.8</a>　<span class="comp">企业微信群</span><a href="#s16-3-step2">16.3 ②</a> / <a href="#s16-7">16.7</a>　<span class="comp">私人定制交接</span><a href="#s16">第 16 节</a>　<span class="comp">写作智能体</span><a href="#s3-3">3.3</a>　<span class="comp">反馈智能体</span><a href="#s7-2">7.2</a>　<span class="comp">知识运营管道</span><a href="#s7-1">7.1</a>　<span class="comp">智能眼镜入口</span><a href="#s17">第 17 节</a></p>
+    <p class="muted">层级口径见 <a href="#s1-5">1.5 主线 / 子线 分层说明</a>；第 12 节商业层不标注。</p>
+  </div>
+
+  <div class="toc" id="toc">
+    <strong>目录</strong>
+    <ul><li><a href="#s1">1. 项目定位、核心原则与非目标</a> </li><ul><li><a href="#s1-1">1.1 目标</a> </li><li><a href="#s1-2">1.2 核心护城河</a> </li><li><a href="#s1-3">1.3 核心原则</a> </li><li><a href="#s1-4">1.4 非目标（明确不做）</a> </li><li><a href="#s1-5">1.5 主线 / 子线 分层说明（v2 新增）</a> </li></ul><li><a href="#s2">2. 整体架构（路由器—工作节点编排框架）</a> </li><li><a href="#s3">3. 三个子图</a> </li><ul><li><a href="#s3-1">3.1 行程规划子图（进主循环）</a> <span class="layer l-main">主线</span></li><ul><li><a href="#s3-1-1">3.1.1 私人定制交接概要</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s3-2">3.2 讲解子图（旁路触发，不进主循环的工具选择）</a> <span class="layer l-branch">分支线</span></li><li><a href="#s3-3">3.3 离线反馈智能体（独立离线，不进主链路）</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s4">4. 六层详细规格</a> </li><ul><li><a href="#s4-1">4.1 模型层</a> <span class="layer l-top">顶层</span></li><li><a href="#s4-2">4.2 工具层</a> <span class="layer l-top">顶层</span></li><ul><li><a href="#s4-2-1">4.2.1 酒店接入：分阶段路径</a> </li><li><a href="#s4-2-2">4.2.2 酒店推荐维度（正式清单）</a> </li></ul><li><a href="#s4-3">4.3 编排层（编排框架）</a> </li><li><a href="#s4-4">4.4 记忆层</a> </li><li><a href="#s4-5">4.5 视觉层</a> </li><li><a href="#s4-6">4.6 监控层</a> </li></ul><li><a href="#s5">5. 防幻觉机制</a> </li><li><a href="#s6">6. 视频教训落地（视频《Wander with Mira》）</a> </li><li><a href="#s7">7. 离线部分</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s7-1">7.1 知识运营离线管道</a> <span class="layer l-sub">子线</span></li><li><a href="#s7-2">7.2 反馈收集智能体（独立离线，不进主链路）</a> <span class="layer l-sub">子线</span></li><li><a href="#s7-3">7.3 人工审核时限（SLA，服务水平约定）</a> </li><li><a href="#s7-4">7.4 版本控制</a> </li></ul><li><a href="#s8">8. 评测集（评测为一等公民）与数据质量门禁</a> </li><ul><li><a href="#s8-1">8.1 四类评测集</a> </li><li><a href="#s8-2">8.2 数据质量指标（写死）</a> </li><li><a href="#s8-3">8.3 子线评测与验收（私人定制交接 / 企业微信 / 照片收集）</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s9">9. 失败模式目录（每个组件四种返回）</a> </li><li><a href="#s10">10. 成本</a> </li><ul><li><a href="#s10-1">10.1 三套成本方案与切换条件</a> </li><li><a href="#s10-2">10.2 月成本模型（MVP，估算）</a> </li><li><a href="#s10-3">10.3 成本与时延</a> <span class="layer l-main">主线</span></li></ul><li><a href="#s11">11. 合规清单（内部测试阶段可暂缓）</a> </li><li><a href="#s12">12. 库存即服务商业层（独立于六层）</a> </li><li><a href="#s13">13. 任务依赖图、审查优先级与双向追溯</a> </li><ul><li><a href="#s13-1">13.1 任务依赖图（P0 / P1 / P2）</a> </li><li><a href="#s13-2">13.2 双向追溯</a> </li></ul><li><a href="#s14">14. 开发顺序与验收指标</a> </li><ul><li><a href="#s14-1">14.1 开发顺序</a> </li><li><a href="#s14-2">14.2 MVP 验收指标</a> </li><li><a href="#s14-3">14.3 子线验收（建议）</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s15">15. 决策记录 / 矛盾说明</a> </li><ul><li><a href="#d-1">D-1：视频模型的部署位置（云 API 与本地 4090）</a> </li><li><a href="#d-2">D-2：合并规则</a> </li><li><a href="#d-3">D-3：酒店后续接入选项</a> </li><li><a href="#d-4">D-4：v2 的生成方式与编号（v2 新增）</a> </li><li><a href="#d-5">D-5：主线 / 子线 标注口径（v2 新增）</a> </li><li><a href="#d-6">D-6：写作智能体是离线子线，其「成本与时延」却标为主线（v2 新增）</a> </li><li><a href="#d-7">D-7：两份子规格文档的引用口径（v2 新增）</a> </li><li><a href="#d-8">D-8：消息与照片渠道的载体（小程序和网页版）与非目标（v2 新增，已决定）</a> </li><li><a href="#d-9">D-9：企业微信建群与原设计的差异（v2 新增）</a> </li><li><a href="#d-10">D-10：智能体形态与智能眼镜对接的层级（v2 新增）</a> </li><li><a href="#s15-open">子线待确认清单（来自 <code>private-customization-spec.md</code> §13「待确认与限制」）</a> </li></ul><li><a href="#s16">16. 私人定制交接（规划智能体 → 人工定制团队）</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-1">16.1 定位与边界</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-1-1">16.1.1 做什么</a> </li><li><a href="#s16-1-2">16.1.2 不做什么（边界）</a> </li><li><a href="#s16-1-3">16.1.3 与其他组件的关系</a> </li></ul><li><a href="#s16-2">16.2 交接触发条件</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-2-1">16.2.1 三个主触发（必做）</a> </li><li><a href="#s16-2-2">16.2.2 附加触发（建议）</a> </li><li><a href="#s16-2-3">16.2.3 触发时对用户说什么（建议）</a> </li></ul><li><a href="#s16-3">16.3 五步设计</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-3-step1">① 生成结构化交接摘要</a> </li><li><a href="#s16-3-step2">② 建立企业微信沟通渠道（顾问为群主）</a> <span class="layer l-sub">子线</span><span class="comp">企业微信群</span></li><li><a href="#s16-3-step3">③ 群命名：目的地 + 日期</a> </li><li><a href="#s16-3-step4">④ 用户侧状态页（链到群聊）</a> </li><li><a href="#s16-3-step5">⑤ 回写订单系统（AI 始终使用最新版本）</a> </li></ul><li><a href="#s16-4">16.4 交接包内容</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-4-1">16.4.1 需求单字段（厦门版）</a> </li><li><a href="#s16-4-2">16.4.2 交接包结构</a> </li></ul><li><a href="#s16-5">16.5 时效承诺</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-6">16.6 参考模式</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-6-1">16.6.1 携程定制（注意：资料来自 2017–2018 年）</a> </li><li><a href="#s16-6-2">16.6.2 飞猪定制商家规则</a> </li><li><a href="#s16-6-3">16.6.3 Black Tomato Feelings Engine（产品名，意为「感受引擎」）</a> </li></ul><li><a href="#s16-7">16.7 沟通渠道</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-8">16.8 照片收集流程</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-8-1">16.8.1 用户照片的三级来源</a> </li><li><a href="#s16-8-2">16.8.2 AI 生成标注（硬规则）</a> <span class="layer l-sub">子线</span><span class="comp">生图</span></li><li><a href="#s16-8-3">16.8.3 渠道约束</a> </li></ul><li><a href="#s16-9">16.9 收费方式（待决策）</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-10">16.10 隐私与同意（建议）</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-11">16.11 参考来源</a> </li></ul><li><a href="#s17">17. 智能体形态 + 可穿戴智能眼镜对接</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s17-1">17.1 智能体优先的呈现方式</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-2">17.2 目标设备与厂商开放平台</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-3">17.3 语音交互入口</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-4">17.4 实时视觉：眼镜摄像头作为视觉输入</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-5">17.5 与六层的对接</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-6">17.6 离线 / 在线模式切换</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-7">17.7 摄像头隐私与同意（建议）</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-8">17.8 待确认清单</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-9">17.9 参考来源</a> </li></ul></ul>
+  </div>
+
+<blockquote>
+<p><strong>v2 生成说明（2026-11-16）</strong></p>
+<ul>
+<li>本文由 <code>consolidated-spec.md</code>（@ <code>5609b36</code>）+ 两份配套子规格文档合并生成：<code>private-customization-spec.md</code>（@ <code>006b093</code>，全文并入；§8 / 16.8 已同步到 <code>ea1daa0</code>，小程序 / 网页措辞已同步到 <code>a80b5e0</code>）、<code>writing-agent-spec.md</code>（@ <code>9b65939</code>，仅并入 §11「成本与时延」）。</li>
+<li><strong><code>consolidated-spec.md</code> 保持不变</strong>，作为 12:01 的基线（首次提交 <code>81dc15d</code>，2026-11-16 12:01，v1.0–v1.4 合并）。该文件之后另有 <code>951d639</code>（4.2.2 酒店推荐维度）、<code>76596f8</code>（写作智能体交叉引用）、<code>5609b36</code>（私人定制交叉引用）三次增补，均已包含在本文中。</li>
+<li>引用两份子规格文档时分别标注文件名和节号：<code>writing-agent-spec.md</code> §N 与 <code>private-customization-spec.md</code> §N 不混用。<code>private-customization-spec.md</code> 现有 13 节（§8 照片收集流程，§12 评测与验收，§13 待确认与限制）。</li>
+<li>「主线 / 子线」标注见 1.5 节；第 1–15 节沿用基线编号，新增第 16 节（私人定制交接，子线）追加在末尾，不改动原编号（见第 15 节 D-4）。</li>
+<li>推断 / 建议 / 待核实 / 待决策 / 待测 等标注沿用原文，不作删改。</li>
+</ul>
+</blockquote>
+
+<p><strong>以下为基线文档原有的文档说明（保留）</strong></p>
+<blockquote>
+<p><strong>文档说明</strong></p>
+<ul>
+<li>本文合并 <code>index.html</code> 的四个版本：v1.0（提交 <code>8c0d610</code>）、v1.2（提交 <code>f1d15eb</code>）、v1.3（提交 <code>dceb7a9</code>）、v1.4（提交 <code>b559096</code>，当前 <code>main</code> 分支）。</li>
+<li>本文描述的是<strong>完整目标系统的一份统一规格文档</strong>，不是差异对比或变更日志。后续版本压缩过的内容，一律以 v1.0 的最完整表述为准；后续版本新增的内容全部保留。</li>
+<li><strong>各版本的权威历史仍以 <code>index.html</code> 的各次提交为准。</strong> 本文与某一版本原文冲突时，以该版本 <code>index.html</code> 原文为准，并在第 15 节「决策记录 / 矛盾说明」中登记。</li>
+<li>标注「推断 / 建议」的内容不来自四个版本原文，是合并时补充的提议。</li>
+<li>状态：内部测试优先。</li>
+</ul>
+</blockquote>
+
+
+<h2 id="s1">1. 项目定位、核心原则与非目标 </h2>
+<div class="card">
+<h3 id="s1-1">1.1 目标 </h3>
+
+<p>做厦门（含鼓浪屿）本地深度的 AI（人工智能）旅行智能体，覆盖<strong>行程规划 + 智能讲解</strong>两项能力。不复制"全球一句话订行程"，而是做<strong>地头库存 + 真实导游经验</strong>这个别人替代不了的一层。</p>
+<h3 id="s1-2">1.2 核心护城河 </h3>
+
+<ul>
+<li>931 栋历史建筑档案。</li>
+<li>烟火气小吃与古早味的踩点数据。</li>
+<li>不在在线旅行平台（OTA）上架的好店，以及靠谱的线下关系。</li>
+</ul>
+<h3 id="s1-3">1.3 核心原则 </h3>
+
+<ul>
+<li><strong>自建库优先</strong>：外部 MCP（模型上下文协议，如高德、抖音本地生活、携程 / 飞猪）只做兜底，不得覆盖本地判断。</li>
+<li><strong>酒店下单走「意向单 + 人工确认」</strong>：不做实时扣库存的裸奔平台。</li>
+<li><strong>规格文档先行</strong>：给 Bot / Cursor 的一切输入都必须可执行、可验收。</li>
+<li><strong>内部关门测试先跑通</strong>：不上线，暂不办 ICP（互联网信息服务备案）/ 算法备案（见第 11 节）。</li>
+</ul>
+<h3 id="s1-4">1.4 非目标（明确不做） </h3>
+
+<ul>
+<li>不做全球一句话订机票酒店。</li>
+<li>不对接酒店 PMS（酒店物业管理系统）实时扣库存。</li>
+<li>只做微信小程序和网页版（电脑网页 + 微信小程序），不做原生手机客户端。</li>
+<li>不做全岛 3D 预建模。</li>
+<li>不强制用户授权邮箱或微信聊天记录。</li>
+<li>不在运行时自动修改知识库，入库必须人工审核。</li>
+<li>不提供机票 / 动车工具，游客自订。</li>
+<li>不接美团外卖。</li>
+</ul>
+<h3 id="s1-5">1.5 主线 / 子线 分层说明（v2 新增） </h3>
+
+<p>按用户指定的标注口径：</p>
+<ul>
+<li><strong>顶层</strong>：4.1 模型层、4.2 工具层。它们是主线和子线共用的底座，单独列在最上层，不归入主线或子线。</li>
+<li><strong>主线</strong>：实时主链路及其直接支撑。<ul>
+<li>路由器 → 工作节点 → 主循环 → 规划子图（3.1），以及编排层（4.3）、记忆层（4.4）、视觉层（4.5）、监控层（4.6）、防幻觉机制（第 5 节）。</li>
+<li><strong>成本与时延</strong>（10.3，引自 <code>writing-agent-spec.md</code> §11）按用户要求标为主线。</li>
+</ul>
+</li>
+<li><strong>分支线</strong>：从主线分出的分支，不同于主线之外的子线。<ul>
+<li>讲解子图（3.2）：主线的分支线。</li>
+</ul>
+</li>
+<li><strong>子线</strong>：主线之外的所有智能体和流程，一律标注<span class="layer l-sub">子线</span>：<ul>
+<li>私人定制交接（3.1 概要、第 16 节全文）</li>
+<li>企业微信群（16.3 第 ② 步、16.7）：<strong>只用于私人定制人工交接；普通订单用小程序 / 网页内消息</strong></li>
+<li>照片收集流程（16.8），含三级照片来源</li>
+<li>生图（16.8 三级兜底拼图中使用 AI 生图时；生成图必须清楚标注「AI 生成」）</li>
+<li>写作智能体（3.3，全文见 <code>writing-agent-spec.md</code>）</li>
+<li>反馈收集智能体（3.3、7.2）、知识运营离线管道（7.1）</li>
+<li>智能体形态 + 可穿戴智能眼镜对接（第 17 节，归类为推断，见第 15 节 D-10）</li>
+</ul>
+</li>
+<li>第 12 节库存即服务是「独立于六层」的商业层，不是智能体或流程，本文不给它加主线 / 子线标注。</li>
+<li>讲解子图是主线的分支线（用户 2026-11-16 决定）；商业层不标注，是本文对用户口径的理解（推断），见第 15 节 D-5。</li>
+</ul>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s2">2. 整体架构（路由器—工作节点编排框架） </h2>
+<div class="card">
+<p>可以想象成一个旅行社前台：</p>
+<ul>
+<li><strong>路由器（接待员）</strong>：无状态。只看哪个窗口空闲，把会话（会话编号）分过去，不办业务。</li>
+<li><strong>工作节点（窗口）</strong>：每个窗口是一个完整的 LangGraph 实例，背后是同一套工作站（图 + 节点 + 插件）。会话状态全部放在 Redis，窗口之间不共享私有状态。</li>
+<li><strong>主循环子图</strong>：模型节点（Qwen 选工具）→ 工具执行节点（跑插件）→ 结果回填节点，循环到模型判断「答完了」为止。</li>
+<li><strong>插件工具箱</strong>：六个核心插件，分别是酒店查询、餐厅查询、行程生成（编排框架内函数）、高德 MCP、微信 MCP、支付宝 MCP。</li>
+<li><strong>记忆检索插件</strong>：统一入口，按场景路由到不同语义库。</li>
+<li><strong>意图分叉</strong>：主图先看意图，再分进<strong>规划子图</strong>或<strong>讲解子图</strong>。<strong>反馈收集智能体</strong> 和<strong>知识运营管道</strong>在离线侧运行，不进主链路。</li>
+<li><strong>监控</strong>：每个节点挂 OTel（OpenTelemetry 可观测性标准）追踪片段，旁路记录，不干预主流程。</li>
+</ul>
+<p>LangGraph 是骨架，dsh「一切皆插件」是血肉。工具、循环子图、检索入口都可以插拔替换，主图不动。</p>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s3">3. 三个子图 </h2>
+<div class="card">
+<p>主图先看意图，再分进不同的车间。车间之间各干各的，不抢资源。<strong>路由规则写死，不让模型自己猜</strong>：「帮我排三天」走规划子图；「这是什么房子」走讲解子图。</p>
+<h3 id="s3-1">3.1 行程规划子图（进主循环） <span class="layer l-main">主线</span></h3>
+
+<ul>
+<li><strong>任务类型</strong>：任务型，输入是槽位约束 + 实时库存 + 价格区间。</li>
+<li><strong>偏好槽位</strong>：写死为硬约束（来自视频教训，见第 6 节）。</li>
+<li><strong>检索策略</strong>：结构化字段 + BM25（关键词相关度排序算法）优先，向量检索兜底。</li>
+<li><strong>成功标准</strong>：转化，即用户订没订、去没去。</li>
+<li><strong>输出</strong>：严格 JSON（结构化数据格式）行程，<strong>必须给多方案（2–3 套）</strong>，并附高德路径对比。</li>
+<li><strong>硬信息校验节点</strong>：输出前强制经过。时间、价格、库存必须做双源校验并带时间戳（见第 5 节）。</li>
+<li><strong>行程生成</strong>：不是独立工具，而是编排框架内函数。输入是模板 + 槽位约束 + 实时库存，输出标准 JSON 行程。</li>
+<li><strong>低置信度隐藏点</strong>：可以作为建议附带，但不强制插入主行程。</li>
+</ul>
+<h4 id="s3-1-1">3.1.1 私人定制交接概要 <span class="layer l-sub">子线</span><span class="comp">私人定制交接</span></h4>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §1–§3（@ <code>006b093</code>）。全文见第 16 节。</p>
+</blockquote>
+<ul>
+<li><strong>三个主触发</strong>：用户要求「找定制师」；用户提交需求单；流程走到付款 / 订单变更，或识别到特殊事件（求婚、纪念日、团建等）。附加触发（建议）见 16.2.2。</li>
+<li><strong>五步</strong>：① 生成结构化交接摘要 → ② 建立企业微信沟通渠道（顾问为群主）→ ③ 群命名：目的地 + 日期 → ④ 用户侧状态页 → ⑤ 回写订单系统（AI 始终用最新版本）。</li>
+<li><strong>企业微信实际限制</strong>：服务端 API（应用程序接口）不能直接创建含微信用户的客户群；主路径为方案 A（「联系我」+ 顾问客户端 <code>openEnterpriseChat</code> 建群），备选方案 B（预建空客户群池 + 进群二维码），见 16.3。</li>
+<li><strong>渠道规则</strong>：企业微信群只用于私人定制人工交接；普通订单用小程序 / 网页内消息，不建群（16.7）。</li>
+<li><strong>边界</strong>：AI 不付款、不下单、不改单，沿用「意向单 + 人工确认」（1.3、4.2.1）。</li>
+</ul>
+<h3 id="s3-2">3.2 讲解子图（旁路触发，不进主循环的工具选择） <span class="layer l-branch">分支线</span><span class="comp">讲解子图</span></h3>
+
+<ul>
+<li><strong>任务类型</strong>：体验型，故事优先，参数靠后。</li>
+<li><strong>触发方式</strong>：GPS（卫星定位）+ CLIP（图文匹配模型）定位到 POI（兴趣点），或用户语音说「这是什么」。</li>
+<li><strong>检索策略</strong>：纯 HNSW（分层可导航小世界图索引）语义向量，取前 3 条并附置信度。</li>
+<li><strong>生成风格</strong>：像懂行的本地导游讲故事，而不是念说明书。</li>
+<li><strong>输出</strong>：语音为主通道，视觉辅助（手机明信片 / 眼镜 AR（增强现实）锚点）。</li>
+<li><strong>流水线</strong>：触发一次 → 检索一次 → 生成一次 → 输出一次，不循环。</li>
+<li><strong>知识库进化</strong>：运行时的讲解子图不负责进化，进化由离线管道负责（见第 7 节）。</li>
+</ul>
+<h3 id="s3-3">3.3 离线反馈智能体（独立离线，不进主链路） <span class="layer l-sub">子线</span><span class="comp">反馈智能体</span><span class="comp">写作智能体</span></h3>
+
+<p>详见第 7.2 节。知识运营离线管道同属离线部分，见第 7.1 节。</p>
+<p>写作智能体<span class="layer l-sub">子线</span>是反馈收集智能体的离线同级智能体（行程结束后自动生成游记，用户确认后才同步到公众号 / 小红书等），详见 <code>writing-agent-spec.md</code>。其 §11「成本与时延」按用户口径标为主线，并入本文 10.3（见第 15 节 D-6）。</p>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s4">4. 六层详细规格 </h2>
+<div class="card">
+<h3 id="s4-1">4.1 模型层 <span class="layer l-top">顶层</span></h3>
+
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>模型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主模型（语音 + 函数调用）</td>
+<td><strong>Qwen3.8 Omni Flash Realtime</strong></td>
+<td>语音和函数调用 一体；中文方言（含闽南语）覆盖最好；数据在北京 / 新加坡；成本极低</td>
+</tr>
+<tr>
+<td>备份语音通道</td>
+<td><strong>MOSS TTS（语音合成）+ 转写</strong>（moss-tts / moss-transcribe）</td>
+<td>主模型语音不可用时接管</td>
+</tr>
+<tr>
+<td>图片理解重任务</td>
+<td><strong>Nex N2.6</strong></td>
+<td>以异步子智能体方式运行</td>
+</tr>
+<tr>
+<td>视频实时</td>
+<td><strong>MOSS-VL-Realtime</strong></td>
+<td>第三期上线，<strong>走云 API，不用本地 4090 跑生产</strong>（见第 15 节）</td>
+</tr>
+<tr>
+<td>备选</td>
+<td>GPT Realtime / Gemini Live</td>
+<td>只在客户明确要求或主模型挂掉时切换；<strong>切换需要重新过合规</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>选型理由（v1.0）</strong>：Qwen 一个模型同时覆盖实时语音和工具调用，方言（尤其闽南语）覆盖最好，数据驻留在境内或新加坡，成本极低。GPT Realtime / Gemini Live 只作为备选，因为切换要重过合规。</p>
+<h3 id="s4-2">4.2 工具层 <span class="layer l-top">顶层</span></h3>
+
+<p><strong>插件清单</strong></p>
+<ul>
+<li><strong>酒店查询</strong>：自建轻量系统，约 20 家合作酒店的结构化卡片。下单生成意向单，人工确认后回传。不对接 PMS。分阶段接入见下文。</li>
+<li><strong>餐厅查询</strong>：双库。自建踩点库优先（小吃、老字号、烟火气），外部联网兜底。</li>
+<li><strong>行程生成</strong>：编排框架内函数（见 3.1）。</li>
+<li><strong>高德 MCP</strong>：POI、地理编码、路径规划。</li>
+<li><strong>支付</strong>：微信 MCP + 支付宝 MCP，密钥和风控交给支付通道方。</li>
+</ul>
+<p><strong>规则</strong></p>
+<ul>
+<li>无机票 / 动车工具；不接美团外卖。</li>
+<li>查询优先级写死：<strong>自建库 > 外部 MCP</strong>。</li>
+<li><strong>硬信息强制双源校验</strong>：时间、价格、库存这类硬信息，必须有两个来源交叉校验（如自建库 + 官方 / 高德），并带时间戳。</li>
+</ul>
+<h4 id="s4-2-1">4.2.1 酒店接入：分阶段路径 </h4>
+
+<p><strong>阶段 1：联盟深链兜底</strong></p>
+<ul>
+<li>合作酒店之外的需求，跳转到外部平台的联盟深链，不在本系统内成交。</li>
+<li>这与"自建库优先、外部只做兜底"一致。</li>
+<li>具体走哪个联盟（携程联盟 / 美团联盟 / 飞猪等）属于<strong>建议</strong>，需要确认资质门槛。</li>
+</ul>
+<p><strong>阶段 2：约 20 家合作酒店结构化卡片 + 人工确认的意向单（主路径）</strong></p>
+<ul>
+<li>不对接 PMS（见非目标）。</li>
+<li>用户选定后生成意向单，由人工向酒店确认房态和价格，确认后回传用户。</li>
+<li>涉及支付和下单的节点必须人工确认（与拟人化交互合规、监控层的敏感路径一致）。</li>
+</ul>
+<p><strong>后续可选（建议，非四个版本原文，来自此前的酒店接入调研）</strong></p>
+<ul>
+<li>合作方规模变大后，可以评估<strong>民宿 PMS / 渠道管理器开放平台</strong>，比如云掌柜开放平台（支持"各类预订平台直连、自动落单排房、同步库存房价"）、订单来了（全渠道直连 / 开放平台）。以"预订平台"身份接入，就不用逐家维护房态。</li>
+<li>需要扩大覆盖时，可以评估<strong>飞猪酒店通用分销 API</strong>（需要企业支付宝 + 淘宝企业账号，申请"大 C 账号"，由飞猪业务线下协助）或<strong>道旅 Dida</strong>（流程是签 保密协议（NDA） → 测试账号 → 问卷 → 开发会议 → 测试订单认证 → 正式额度；测试账号 QPS（每秒查询数）为 10）。道旅对厦门国内酒店的覆盖需要另行确认。</li>
+<li>以上与当前非目标"不对接 PMS 实时扣库存"冲突的部分，必须先修订规格文档的非目标再实施。</li>
+</ul>
+<h4 id="s4-2-2">4.2.2 酒店推荐维度（正式清单） </h4>
+
+<blockquote>
+<p>来源：此前的酒店推荐维度调研（对比 Odessia、豆包、千问、飞猪帮帮、携程、同程等平台后，结合厦门本地情况提出），不来自 v1.0–v1.4 原文。现作为合作酒店结构化卡片的正式维度清单。</p>
+</blockquote>
+<ol>
+<li><strong>实时价格、可订性与取消政策</strong>：由供应商或合作方实时拉取，不用缓存做推荐；属硬信息，遵守第 5 节双源校验。</li>
+<li><strong>片区</strong>：鼓浪屿、中山路 / 轮渡、曾厝垵 / 环岛路、沙坡尾 / 厦大、五缘湾、集美等；自定地理标签，用高德 POI 校准。</li>
+<li><strong>交通可达</strong>：到最近地铁站的步行距离，到轮渡码头、机场、高铁站的车程；数据来自高德路径规划。</li>
+<li><strong>鼓浪屿专项</strong>（仅岛上住宿）：从码头步行到店的时间、有无台阶坡道、是否提供接船或行李搬运、能否赶上夜航 / 通宵返程；航班时刻以厦门轮渡官网为准。</li>
+<li><strong>海景真实度（按房型分级）</strong>：正面海景 / 侧海景 / 无海景，附楼层与实拍窗景；合作方填报 + 评论挖掘，最好人工实地核验一次。</li>
+<li><strong>噪音</strong>：是否临街、是否靠近夜市或酒吧街、隔音情况。</li>
+<li><strong>清洁与维护</strong>：重点关注潮湿和霉味。</li>
+<li><strong>房东 / 管家服务</strong>。</li>
+<li><strong>硬设施</strong>：停车、电梯、空调、泳池、亲子设施、宠物等。</li>
+<li><strong>早餐与周边餐饮</strong>：合作方填报 + 高德周边 POI。</li>
+<li><strong>台风季弹性</strong>：台风季（7–9 月）是否免费取消、停航时岛上住客如何处理、离码头远近。</li>
+<li><strong>适合人群</strong>：情侣、亲子、带长辈、商务、文艺小众等。</li>
+</ol>
+<p><strong>合规底线（准入条件，不参与打分）</strong>：民宿是否已完成备案、能否正常做公安入住登记。不满足的不进推荐池。</p>
+<p><strong>数据来源提醒</strong>：评论类维度优先使用供应商随库存提供的内容、自己的住后回访和合作方授权数据；不抓取携程、美团等平台评论。</p>
+<h3 id="s4-3">4.3 编排层（编排框架） </h3>
+
+<ul>
+<li><strong>选型</strong>：LangGraph + LangSmith（开发期免费层）。</li>
+<li><strong>插件规范</strong>：每个工具一个独立文件，必须声明以下字段：<ul>
+<li>名称</li>
+<li>JSON 模式定义</li>
+<li>超时</li>
+<li>降级返回值</li>
+<li>监控指标</li>
+</ul>
+</li>
+<li><strong>循环子图可替换</strong>。</li>
+<li><strong>超时策略</strong>：超时 <strong>3 秒</strong>，<strong>重试 1 次</strong>；再失败就降级并打标（<code>partial</code> / <code>no_exact_match</code>）。各组件的具体降级行为见第 9 节。</li>
+<li><strong>状态</strong>：全部进 Redis，<strong>TTL（过期时间）30 分钟</strong>。</li>
+<li><strong>并发三档</strong>：日活会话达到 <strong>800</strong> 进入第二档，达到 <strong>8000</strong> 进入第三档。工作节点 无状态，水平扩展。</li>
+<li><strong>硬信息校验节点</strong>：规划子图输出前强制经过。</li>
+</ul>
+<h3 id="s4-4">4.4 记忆层 </h3>
+
+<p><strong>框架</strong>：基于 <strong>CoALA（语言智能体认知架构）框架</strong> + LangGraph 的 <code>checkpointer</code> / <code>store</code>（检查点 / 存储组件） + dsh 挂载思想。</p>
+<p><strong>五个独立语义库</strong>（共享 HNSW 向量基础设施）：</p>
+<ol>
+<li>931 栋历史建筑档案库</li>
+<li>小吃探店 / 烟火气库</li>
+<li>文化典故 / 讲解库</li>
+<li>打卡点库</li>
+<li>古早味库</li>
+</ol>
+<p>另设一个<strong>低置信度隐藏点库</strong>：用于建议，不强制插入主行程。</p>
+<p><strong>检索</strong></p>
+<ul>
+<li><strong>统一检索插件</strong>：按场景路由，规划场景查规划库，讲解场景查讲解库，可以并行。</li>
+<li><strong>混合检索</strong>：HNSW 向量 + BM25 关键词 + 结构化字段过滤，用 RRF（倒数排名融合）融合。规划子图以结构化 + BM25 为主；讲解子图走纯语义。</li>
+</ul>
+<p><strong>规划维度</strong>（参考）：位置、性价比、评分、设施、服务、餐饮、房间、实时库存、团购价、实拍、资质、用户历史偏好、上下文（时间 / 地点 / 天气）、转化导向等。</p>
+<p><strong>讲解维度</strong>：故事密度、文化代表性、在地人认同度、拍照出片度、适老适亲。</p>
+<p><strong>数据偏差处理</strong>：原档案的高置信度信息优先；用户贡献的内容作为旁注，标注 <strong>「未经核实」</strong>。</p>
+<h3 id="s4-5">4.5 视觉层 </h3>
+
+<p><strong>行前（还没到厦门）</strong></p>
+<ul>
+<li>Odessia 式生成式界面，<strong>电脑端为主</strong>。</li>
+<li>智能体按需组装地图、房型图、价格表、多版本行程对比。</li>
+<li>多方案并列展示。</li>
+</ul>
+<p><strong>行中（已在鼓浪屿 / 三丘田）</strong>分两层：</p>
+<ul>
+<li><strong>动态层</strong>：<ul>
+<li>高德 MCP 提供真实路网折线，用 Leaflet / 高德 JS API 渲染。</li>
+<li>实时算路、标点、语音讲解。</li>
+<li>定位用 GPS + CLIP 融合：先粗定位缩小候选，再用照片精确匹配。</li>
+</ul>
+</li>
+<li><strong>增强层</strong>：<ul>
+<li>只对 931 栋中最有故事的<strong>约 50 栋</strong>做轻量空间锚点。</li>
+<li>输出结构化数据，由<strong>雷鸟 / Rokid</strong> 等眼镜的 SDK（软件开发工具包）自己渲染。</li>
+<li>你控制「看见什么」，不控制「怎么看见」。</li>
+<li><strong>不做全岛 3D 预建模</strong>。</li>
+</ul>
+</li>
+</ul>
+<p><strong>其他要求</strong></p>
+<ul>
+<li>打卡点作为独立图层叠加在路网上。</li>
+<li>行中关键节点标记「建议二次确认」。</li>
+<li>每条硬信息都挂来源标签，没有标签的前端不渲染（见第 5 节）。</li>
+</ul>
+<h3 id="s4-6">4.6 监控层 </h3>
+
+<ul>
+<li><strong>OTel 作为旁路</strong>：追踪片段挂在每个节点（进图、出图、工具调用、大语言模型调用），只记录，<strong>不阻塞主流程</strong>。</li>
+<li>所有失败都打标签并记入 OTel 追踪片段（见第 9 节）。</li>
+<li><strong>专项指标</strong>：硬信息错误率。</li>
+<li><strong>演进路线</strong>：<ul>
+<li>开发期：LangSmith 免费层（每月 5000 条基础追踪记录）。</li>
+<li>准生产后：可以升级团队版 + 部分 OTel + 自托管 LangFuse 尝鲜。</li>
+<li>最优终态：自托管 LangFuse，数据不出内网。敏感路径（支付、下单、前端展示）人工确认；后台逻辑可以静默合并。</li>
+</ul>
+</li>
+<li><strong>自动诊断引擎</strong>（自动诊断并开合并请求）成本较高，准生产阶段再考虑。</li>
+<li><strong>一致性评测</strong> 挂在 LangSmith 上（见第 8 节）。</li>
+</ul>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s5">5. 防幻觉机制 </h2>
+<div class="card">
+<ol>
+<li><strong>拒答机制</strong>：检索没有结果时，必须明确说「查不到」，禁止凭记忆填充。</li>
+<li><strong>硬事实只许来自工具</strong>：时间、价格、库存必须引用工具返回值。</li>
+<li><strong>输出强制引用</strong>：每条硬信息挂来源标签，没有标签的前端不渲染。</li>
+<li><strong>跨会话一致性</strong>：LangSmith 上加一致性评测，出现漂移自动进回归集。</li>
+</ol>
+<p><strong>各层的硬信息双源校验</strong></p>
+<ul>
+<li>工具层：硬信息强制双源校验 + 时间戳。</li>
+<li>编排层：规划子图输出前强制经过硬信息校验节点。</li>
+<li>视觉层：行中关键节点标记「建议二次确认」。</li>
+<li>监控层：跟踪硬信息错误率。</li>
+</ul>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s6">6. 视频教训落地（视频《Wander with Mira》） </h2>
+<div class="card">
+<p>以下规则来自视频《Wander with Mira》里的真实踩坑：</p>
+<ul>
+<li>硬信息强制双源校验，并带时间戳。</li>
+<li>行程必须给多方案，并附高德路径对比。</li>
+<li>偏好槽位写死为硬约束。</li>
+<li>低置信度隐藏点库不强制插入主行程。</li>
+<li>输出带置信度和来源标记，关键节点强制人工确认。</li>
+</ul>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s7">7. 离线部分 <span class="layer l-sub">子线</span></h2>
+<div class="card">
+<p>运行时的讲解子图不负责进化，进化是后台的离线线。下面几条离线链路<strong>只通过讲解库这一个交汇点连接</strong>，彼此不干扰。</p>
+<h3 id="s7-1">7.1 知识运营离线管道 <span class="layer l-sub">子线</span><span class="comp">知识运营管道</span></h3>
+
+<p><strong>知识运营智能体</strong></p>
+<ul>
+<li>定时上网搜索鼓浪屿的新资料。</li>
+<li>整理成档案模板草稿，送进人工审核队列。</li>
+<li>人工确认后才入库；被拒绝的保留记录。</li>
+</ul>
+<p><strong>数据摄取管道</strong></p>
+<ul>
+<li><strong>录音</strong>：MOSS 转写服务转文字 → Nex N2.6 抽字段 → 生成草稿 → 人工队列。</li>
+<li><strong>照片</strong>：CLIP 图文向量 → 匹配已有档案，取第 1 名挂上；没命中的标为「待归档」。</li>
+</ul>
+<h3 id="s7-2">7.2 反馈收集智能体（独立离线，不进主链路） <span class="layer l-sub">子线</span><span class="comp">反馈智能体</span></h3>
+
+<ul>
+<li><strong>触发入口</strong>：<ul>
+<li>行程结束后主动提醒</li>
+<li>用户主动反馈</li>
+<li>行中实时纠错</li>
+</ul>
+</li>
+<li><strong>四步流程</strong>：结构化提取 → 交叉验证（官方 / 高德）→ 生成变更草稿 → 人工审核队列。</li>
+<li><strong>激励</strong>：积分制，有效反馈加分，可换小礼品；处理结果对用户可见。</li>
+<li><strong>监控指标</strong>：提交率、有效率、入库时长、复发率。</li>
+<li><strong>点赞 / 点踩</strong>：游客可以点赞或点踩，点踩必须填原因，反馈进入知识运营的输入。</li>
+</ul>
+<h3 id="s7-3">7.3 人工审核时限（SLA，服务水平约定） </h3>
+
+<ul>
+<li>草稿 <strong>24 小时内</strong>处理，超时升级。</li>
+<li>两级审核：导游一级审事实，你二级审语气和优先级。</li>
+<li>所有操作都留日志，可以回滚。</li>
+</ul>
+<h3 id="s7-4">7.4 版本控制 </h3>
+
+<ul>
+<li>每条记录带版本号。</li>
+<li>更新是追加，不是覆盖，可以回退。</li>
+</ul>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s8">8. 评测集（评测为一等公民）与数据质量门禁 </h2>
+<div class="card">
+<h3 id="s8-1">8.1 四类评测集 </h3>
+
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回归集</td>
+<td>真实生产追踪记录的问答，人工标注标准答案</td>
+</tr>
+<tr>
+<td>合成集</td>
+<td>大语言模型按模板批量生成模拟问答，<strong>每个库至少 100 条</strong>，覆盖 931 栋 + 小吃</td>
+</tr>
+<tr>
+<td>对抗集</td>
+<td>模糊问题、错误 GPS、冲突信息 / 时间冲突</td>
+</tr>
+<tr>
+<td>一致性评测</td>
+<td>同一问题在多个会话里的回答对比；出现漂移自动进回归集</td>
+</tr>
+</tbody>
+</table>
+<p><strong>红队</strong>：每周自动生成刁钻问题去打讲解子图，失败的用例进回归集。</p>
+<h3 id="s8-2">8.2 数据质量指标（写死） </h3>
+
+<ul>
+<li>来源可追溯率 <strong>100%</strong>。</li>
+<li>置信度标注完整率 <strong>100%</strong>。</li>
+<li>核心字段填充率 <strong>≥ 95%</strong>。</li>
+<li>CLIP 相似度 <strong>> 0.95</strong> 的自动合并，再人工确认。</li>
+<li>超过 <strong>1 年</strong>未更新的标黄，提醒补采。</li>
+</ul>
+<h3 id="s8-3">8.3 子线评测与验收（私人定制交接 / 企业微信 / 照片收集） <span class="layer l-sub">子线</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §12「评测与验收（建议）」（@ <code>006b093</code>），节内交叉引用已改为本文节号。</p>
+</blockquote>
+<ul>
+<li><strong>零自动付款 / 下单</strong>：所有付款、下单、改单动作都有人工确认日志，目标 100%。</li>
+<li><strong>时效达成率</strong>：1 小时首次联系、1 天首版方案的达成率（目标值待决策）。</li>
+<li><strong>交接包完整率</strong>：必填字段、对话全文、来源标签齐全的比例，目标 100%。</li>
+<li><strong>版本一致性</strong>：AI 在交接后的回答只引用最新确认版本，抽检冲突率目标 0。</li>
+<li><strong>AI 生成标注</strong>：用了 AI 生图的兜底拼图，100% 带可见的「AI 生成」标注。</li>
+<li><strong>普通订单不建企业微信群</strong>：没有触发私人定制交接的订单，建群数为 0。</li>
+<li><strong>照片同意</strong>：用户照片的每次读取都有对应的同意记录，目标 100%。</li>
+<li><strong>评测集</strong>：触发识别集（应转人工 / 不应转人工）、特殊事件识别集、两轮约束失败集。</li>
+</ul>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s9">9. 失败模式目录（每个组件四种返回） </h2>
+<div class="card">
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>正常</th>
+<th>超时</th>
+<th>空结果</th>
+<th>非法输入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>酒店查询</td>
+<td>房型列表</td>
+<td>缓存价 + <code>partial</code></td>
+<td>最近 3 家 + <code>no_exact_match</code></td>
+<td>错误码 + 提示</td>
+</tr>
+<tr>
+<td>餐厅查询</td>
+<td>自建库结果</td>
+<td>外部兜底</td>
+<td>隐藏点建议</td>
+<td>驳回</td>
+</tr>
+<tr>
+<td>高德 MCP</td>
+<td>路径折线</td>
+<td>重试 1 次后降级</td>
+<td>空路径</td>
+<td>坐标错误</td>
+</tr>
+<tr>
+<td>规划子图</td>
+<td>2–3 套 JSON</td>
+<td>降级为简单模板</td>
+<td>提示补充偏好</td>
+<td>槽位不全</td>
+</tr>
+<tr>
+<td>讲解子图</td>
+<td>语音 + 图片</td>
+<td>缓存讲解</td>
+<td>「暂无档案」</td>
+<td>定位失败</td>
+</tr>
+<tr>
+<td>交接摘要生成<span class="layer l-sub">子线</span></td>
+<td>交接包</td>
+<td>降级为「需求单 + 对话全文」</td>
+<td>需求单必填项缺失时，引导用户补填</td>
+<td>非厦门需求，礼貌说明不承接</td>
+</tr>
+<tr>
+<td>渠道建立（企业微信）<span class="layer l-sub">子线</span></td>
+<td><code>chatId</code> / 已添加顾问</td>
+<td>1 小时内未建立 → 电话兜底</td>
+<td>用户未添加顾问 → 短信 + 电话</td>
+<td>接口错误码记录并告警，转电话</td>
+</tr>
+<tr>
+<td>状态页<span class="layer l-sub">子线</span></td>
+<td>正常展示</td>
+<td>显示上次状态 + 刷新提示</td>
+<td>显示「顾问分配中」</td>
+<td><code>handoff_id</code> 无效时提示重新提交</td>
+</tr>
+<tr>
+<td>照片收集<span class="layer l-sub">子线</span></td>
+<td>用户照片（一级 / 二级）</td>
+<td>提示稍后上传，可先出拼图</td>
+<td>无照片 → 三级拼图兜底</td>
+<td>格式不支持，跳过并提示</td>
+</tr>
+<tr>
+<td>回写订单系统<span class="layer l-sub">子线</span></td>
+<td>新版本落库</td>
+<td>重试；规划子图继续用上一确认版本</td>
+<td>无新版本，不更新</td>
+<td>字段校验失败，驳回给顾问</td>
+</tr>
+</tbody>
+</table>
+<p>所有失败都必须打标签并记入 OTel 追踪片段。通用超时策略为 3 秒 + 重试 1 次 + 降级打标（见 4.3）。</p>
+<p>标<span class="layer l-sub">子线</span>的行来自 <code>private-customization-spec.md</code> §11「失败模式」（@ <code>006b093</code>），v2 并入。</p>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s10">10. 成本 </h2>
+<div class="card">
+<h3 id="s10-1">10.1 三套成本方案与切换条件 </h3>
+
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>触发条件</th>
+<th>主要配置</th>
+<th>月成本量级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>低成本 MVP（最小可行产品）</td>
+<td>内部测试 / 月活 < 200</td>
+<td>全走 Qwen + MOSS 云 API，LangSmith 免费层，Redis 小实例，无本地 GPU（显卡）</td>
+<td>几百元</td>
+</tr>
+<tr>
+<td>准生产</td>
+<td>月活 ≥ 200 + 首个付费客户</td>
+<td>LangSmith 团队版，OTel 半接入，Redis 队列削峰，LangFuse 单机尝鲜</td>
+<td>数千元</td>
+</tr>
+<tr>
+<td>最优自愈</td>
+<td>月活 ≥ 800 + 出现真实故障模式</td>
+<td>自托管 LangFuse，完整 OTel，企业级模型并发折扣，敏感路径人工闸门</td>
+<td>按量 + 企业折扣</td>
+</tr>
+</tbody>
+</table>
+<p>前期一个人完全可以承受。视频模型从第一天就规划走云 API，不买 4090 当生产。</p>
+<h3 id="s10-2">10.2 月成本模型（MVP，估算） </h3>
+
+<ul>
+<li><strong>Qwen Realtime</strong>：按音频词元计费，同时要求首包 < 800 毫秒。</li>
+<li><strong>高德 MCP</strong>：按调用次数计费。</li>
+<li><strong>LangSmith</strong>：免费层，每月 5000 条追踪记录。</li>
+<li><strong>Redis</strong>：小实例免费试用。</li>
+<li><strong>目标</strong>：MVP 阶段月成本 <strong>< 500 元</strong>。</li>
+</ul>
+<h3 id="s10-3">10.3 成本与时延 <span class="layer l-main">主线</span><span class="comp">成本与时延</span></h3>
+
+<blockquote>
+<p>来源：<code>writing-agent-spec.md</code> §11「成本与时延」（@ <code>9b65939</code>），原文照录。按用户口径标为主线（与原文「离线异步、不占用主链路」的表述存在张力，见第 15 节 D-6）。原文中的 <code>consolidated-spec.md</code> 14.2 / 10.2 与本文 14.2 / 10.2 节号一致。</p>
+</blockquote>
+<ul>
+<li><strong>性质</strong>：离线异步任务，<strong>没有实时要求</strong>，不占用主链路的首包 / P95（第 95 百分位时延）指标预算（主链路指标见 <code>consolidated-spec.md</code> 14.2）。</li>
+<li><strong>成本驱动因素</strong>（定性）：<ol>
+<li>叙事生成的文本词元量：和行程天数、站点数、正文长度大致成正比。</li>
+<li>Nex N2.6 图片理解的调用次数：和照片数成正比，建议先去重、限量再送理解（建议）。</li>
+<li>MOSS-VL-Realtime 视频理解：和视频时长、抽帧密度相关，通常是单篇里最贵的一项（推断，待测）。</li>
+<li>每个平台的排版：以模板为主，接近零模型成本；小模型只处理标题和标签。</li>
+<li>事实校验：高德 MCP 按调用次数计费（见 <code>consolidated-spec.md</code> 10.2），和需校验的站点数成正比。</li>
+<li>用户反复改写语气：每次都会触发一次改写 + 白名单比对。</li>
+</ol>
+</li>
+<li><strong>控制手段</strong>（建议）：低峰批量执行、素材限量、同一行程的主稿缓存复用、改写次数上限（数值待测）。</li>
+<li><strong>预算</strong>：写作智能体的成本要纳入 <code>consolidated-spec.md</code> 10.2 的 MVP 月成本目标（< 500 元）统一核算；单篇成本和时延目前都没有实测数据（待测）。</li>
+</ul>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s11">11. 合规清单（内部测试阶段可暂缓） </h2>
+<div class="card">
+<ul>
+<li><strong>ICP 备案</strong>：对外提供网站或小程序服务时必须办。内部测试不对外，可以先不做。</li>
+<li><strong>算法备案</strong>：生成合成类算法要在「互联网新技术新应用信息服务备案系统」（beian.cac.gov.cn）填报，期限是自提供服务之日起 <strong>10 个工作日</strong>内。纯内部关门测试可以暂缓。</li>
+<li><strong>大模型登记</strong>：只调用 API、没有微调或蒸馏的，走登记（比备案轻）。</li>
+<li><strong>拟人化交互合规</strong>（《人工智能拟人化互动服务管理暂行办法》）：高危操作人工确认，日志留痕。</li>
+<li><strong>生成合成内容标识</strong>：可见标识 + 隐式标识。</li>
+<li><strong>等保三级</strong>：对外上线时建议提前启动。</li>
+<li><strong>模型切换</strong>：切换到 GPT Realtime / Gemini Live 等备选时，要重新过合规。</li>
+</ul>
+<p><strong>当前策略</strong>：先关门自测，跑通三个核心工具 + 语音；真要开放给游客时，再排期备案。</p>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s12">12. 库存即服务商业层（独立于六层） </h2>
+<div class="card">
+<p>更高一层的定位：把厦门地头库存、931 栋档案、实时价格做成开放 API 层，任何模型、任何眼镜、任何应用都能调用。不跟消费者抢关系，而是当基础设施收抽成。</p>
+<ul>
+<li>控制「看见什么」，不控制「怎么看见」。</li>
+<li>输出结构化空间数据（锚点坐标、POI 标签、实时状态），交给各家 SDK 渲染。</li>
+<li><strong>收入模型</strong>：预订佣金 + 私人定制介绍佣金 + 未来可能的 API 调用抽成。</li>
+<li>私人定制的收费方式（按人天服务费 / 价格内含利润 / 确认后收定金）尚<strong>待决策</strong>，见 16.9（来源：<code>private-customization-spec.md</code> §9）。</li>
+</ul>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s13">13. 任务依赖图、审查优先级与双向追溯 </h2>
+<div class="card">
+<h3 id="s13-1">13.1 任务依赖图（P0 / P1 / P2） </h3>
+
+<table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>审查方式</th>
+<th>任务</th>
+<th>依赖</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P0</td>
+<td>亲自审</td>
+<td>LangGraph 骨架 + Redis 会话</td>
+<td>无</td>
+</tr>
+<tr>
+<td>P0</td>
+<td>亲自审</td>
+<td>Qwen Realtime 接入 + 规划子图最小闭环</td>
+<td>骨架</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>自检 + 抽查</td>
+<td>酒店 / 餐厅插件 + 硬信息校验节点</td>
+<td>规划子图</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>自检 + 抽查</td>
+<td>讲解子图旁路触发</td>
+<td>骨架</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>自检</td>
+<td>反馈收集智能体 + 离线管道</td>
+<td>记忆库</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>自检</td>
+<td>视觉层 + 监控埋点</td>
+<td>上述全部</td>
+</tr>
+</tbody>
+</table>
+<p><code>骨架+Redis(P0) ──► Qwen+规划子图(P0) ──► 酒店/餐厅插件+硬信息校验(P1)
+      │
+      └──────────► 讲解子图旁路触发(P1)
+记忆库 ──► 反馈智能体+离线管道(P2)
+上述全部 ──► 视觉层+监控埋点(P2)</code></p>
+<p>并行任务不超过 2 个，审查带宽优先保证 P0。</p>
+<h3 id="s13-2">13.2 双向追溯 </h3>
+
+<p>链路为：<strong>规格条目 ↔ 任务编号 ↔ 代码合并请求 / 提交</strong>。</p>
+<ul>
+<li>规格文档每个章节都标注对应的任务号。</li>
+<li>任务描述必须引用规格文档原文条目。</li>
+<li>出缺陷时，从追踪记录定位到具体规格条目，<strong>5 分钟内</strong>可追溯。</li>
+</ul>
+<p><strong>建议</strong>：任务号可以直接沿用本文章节号（如 <code>T-4.3</code>、<code>T-9</code>），在合并请求描述中引用。具体编号规则四个版本都没有定义，这是合并时的建议。</p>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s14">14. 开发顺序与验收指标 </h2>
+<div class="card">
+<h3 id="s14-1">14.1 开发顺序 </h3>
+
+<ol>
+<li>LangGraph 骨架 + Redis 会话（P0）</li>
+<li>接入 Qwen Realtime + 规划子图最小闭环，含三个核心工具：酒店、餐厅、行程生成（P0）</li>
+<li>跑通最小语音对话：问需求 → 查库 → 出行程 JSON</li>
+<li>酒店 / 餐厅插件 + 硬信息校验（P1）</li>
+<li>讲解子图旁路触发（P1）</li>
+<li>高德 MCP 兜底</li>
+<li>记忆库：先做最有故事的 100 栋 + 一批踩点餐厅；同时上反馈智能体 + 离线管道（P2）</li>
+<li>行前生成式界面 + 行中动态地图（视觉层，P2）</li>
+<li>完善监控埋点与降级逻辑（P2）</li>
+</ol>
+<h3 id="s14-2">14.2 MVP 验收指标 </h3>
+
+<ul>
+<li>语音首包 <strong>< 800 毫秒</strong></li>
+<li>端到端 P95 <strong>< 2 秒</strong></li>
+<li>工具调用成功率 <strong>≥ 99%</strong></li>
+<li>降级率 <strong>< 5%</strong></li>
+<li>硬信息校验覆盖率 <strong>100%</strong></li>
+<li>数据质量门禁全部达标（见 8.2）</li>
+<li>MVP 月成本 <strong>< 500 元</strong>（见 10.2）</li>
+</ul>
+<h3 id="s14-3">14.3 子线验收（建议） <span class="layer l-sub">子线</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §12（@ <code>006b093</code>）。完整清单见 8.3，这里只列上线前必须过的硬性项。</p>
+</blockquote>
+<ul>
+<li>零自动付款 / 下单：所有付款、下单、改单动作都有人工确认日志，目标 100%。</li>
+<li>AI 生成标注：用了 AI 生图的兜底拼图，100% 带可见的「AI 生成」标注。</li>
+<li>普通订单不建企业微信群：没有触发私人定制交接的订单，建群数为 0。</li>
+<li>照片同意：用户照片的每次读取都有对应的同意记录，目标 100%。</li>
+<li>时效达成率（1 小时首次联系、1 天首版方案）：目标值待决策。</li>
+</ul>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s15">15. 决策记录 / 矛盾说明 </h2>
+<div class="card">
+<h3 id="d-1">D-1：视频模型的部署位置（云 API 与本地 4090） </h3>
+
+<ul>
+<li><strong>矛盾</strong>：<code>odessia-xiamen</code> 仓库的 README 写的是视频跑在本地 4090；而规格文档 v1.0 写的是「视频实时：MOSS-VL-Realtime（第三期，走云 API，不本地 4090）」，以及「视频模型从第一天规划走云 API，不买 4090 当生产」。</li>
+<li><strong>决定</strong>：采用规格文档 v1.0 的立场。<strong>生产环境视频走云 API，不为生产购买 4090。</strong></li>
+<li><strong>说明</strong>：v1.0 原文只排除了"用 4090 做生产"，没有提开发实验。本地 4090 只可用于开发实验，这一点是<strong>推断</strong>，不是原文明确的许可。</li>
+<li><strong>README 状态</strong>：在这一点上已过时，以本规格文档为准。本次合并<strong>没有修改</strong> README。</li>
+</ul>
+<h3 id="d-2">D-2：合并规则 </h3>
+
+<ul>
+<li>后续版本压缩过的条目（插件规范字段、3 秒超时 + 重试 1 次 + 降级、Redis TTL 30 分钟、800 / 8000 并发档、CoALA 与五个语义库、规划 / 讲解维度、偏差处理、合规清单、库存即服务收入模型、三套成本方案、MVP 验收），一律按 v1.0 全文恢复。</li>
+<li>v1.4 的验收线删掉了「降级率 < 5%」，本合并版予以保留，并与 v1.4 新增的「硬信息校验覆盖率 100%」并列。</li>
+</ul>
+<h3 id="d-3">D-3：酒店后续接入选项 </h3>
+
+<p>4.2.1 中的「后续可选」（云掌柜、订单来了、飞猪分销、道旅）来自此前的调研，属于<strong>建议</strong>，与非目标「不对接 PMS 实时扣库存」存在张力。实施前必须先修订非目标。</p>
+<h3 id="d-4">D-4：v2 的生成方式与编号（v2 新增） </h3>
+
+<ul>
+<li><code>consolidated-spec.md</code> 保持不变，作为 12:01 基线（<code>81dc15d</code>）；本文另存为 <code>consolidated-spec-v2.md</code>。基线在 12:01 之后的三次增补（<code>951d639</code>、<code>76596f8</code>、<code>5609b36</code>）已包含在本文。</li>
+<li>原 15 节目录结构保留，节号不变；私人定制交接全文追加为第 16 节，没有插入式重编号。因此「第 15 节 决策记录」不再是最后一节。</li>
+<li>私人定制各部分的去向：概要 → 3.1.1；全文 → 第 16 节；失败模式 → 第 9 节；评测 → 8.3（硬性项另列 14.3）；收费待决策 → 16.9（第 12 节加指针）；待确认 → 本节「子线待确认清单」。</li>
+</ul>
+<h3 id="d-5">D-5：主线 / 子线 标注口径（v2 新增） </h3>
+
+<ul>
+<li>标注按用户指定口径：4.1、4.2 为顶层；成本与时延为主线；主线之外的智能体 / 流程（生图、企业微信群、私人定制交接、写作智能体、反馈智能体等）为子线。</li>
+<li>讲解子图（3.2）是主线的分支线，由用户于 2026-11-16 决定，不再是推断。</li>
+<li>用户没有逐项点名的部分，由本文归类（推断）：知识运营离线管道（7.1）归子线；第 12 节商业层不加标注。如与用户本意不符，以用户为准。</li>
+<li>「顶层」的含义：本文理解为 4.1、4.2 是主线和子线共用的底座，不归入任何一线（推断）。</li>
+</ul>
+<h3 id="d-6">D-6：写作智能体是离线子线，其「成本与时延」却标为主线（v2 新增） </h3>
+
+<ul>
+<li><strong>矛盾</strong>：<code>writing-agent-spec.md</code> §1.2 写明写作智能体「不进主链路」；§11 原文写明它是「离线异步任务，没有实时要求，不占用主链路的首包 / P95 指标预算」。而用户要求把「成本与时延」标为主线。</li>
+<li><strong>决定</strong>：按用户口径，10.3 标为主线；写作智能体本身仍标为子线（3.3）。</li>
+<li><strong>说明</strong>（推断）：可以理解为「成本与时延」这一核算维度归主线统一管理（例如都计入 10.2 的 MVP 月成本目标 < 500 元），而不是说写作智能体进入实时主链路。写作智能体不占用 14.2 的首包 / P95 预算这一点不变。</li>
+</ul>
+<h3 id="d-7">D-7：两份子规格文档的引用口径（v2 新增） </h3>
+
+<ul>
+<li>「成本与时延」出自 <code>writing-agent-spec.md</code> §11，不是 <code>private-customization-spec.md</code>。</li>
+<li><code>private-customization-spec.md</code> 在 <code>006b093</code> 中新增 §8（现标题「照片收集流程」，<code>ea1daa0</code> 改名），原 §8–§12 顺延为 §9–§13；现为 13 节。<strong>此前（<code>fba0df6</code> 版本）关于该文件「12 节」或「§11 评测与验收」「§12 待确认与限制」的说法，都早于这次重编号。</strong> 本文一律使用现行节号。</li>
+<li>本文第 16 节内的交叉引用已从子规格文档的节号改为本文节号（例如子规格文档第 7 节 → 本文 16.7；子规格文档第 13 节 → 本文第 15 节）。</li>
+</ul>
+<h3 id="d-8">D-8：消息与照片渠道的载体（小程序和网页版）与非目标（v2 新增，已决定） </h3>
+
+<ul>
+<li>已决定（用户，2026-11-16）：原口径中的载体即微信小程序和网页版，与 1.4 非目标「只做微信小程序和网页版」一致。照片在小程序 / 网页内从手机相册选取上传；普通订单的消息渠道是小程序 / 网页内消息。相关措辞已全文统一。</li>
+</ul>
+<h3 id="d-9">D-9：企业微信建群与原设计的差异（v2 新增） </h3>
+
+<ul>
+<li>原设计是「通过 API 直接创建包含用户的企业微信群，顾问为群主」。按企业微信官方文档，服务端 API 不能直接创建含微信用户的客户群（<code>appchat/create</code> 只能建企业内部群；客户群管理没有创建接口）。采用方案 A / B，详见 16.3 第 ② 步（来源：<code>private-customization-spec.md</code> §3）。</li>
+</ul>
+<h3 id="d-10">D-10：智能体形态与智能眼镜对接的层级（v2 新增） </h3>
+
+<ul>
+<li>第 17 节「智能体形态 + 可穿戴智能眼镜对接」由用户于 2026-11-16 提出，作为新章节追加，不改动第 1–16 节编号。</li>
+<li>层级标为<span class="layer l-sub">子线</span>是本文的推断：眼镜是新增入口，复用主链路而不改变它，且属于未来规划。如果用户认为眼镜入口应属主线或分支线，以用户为准。</li>
+<li>「千万」按用户口径归为 Rokid 系列；是否为「千问」的口误：待确认（见 17.8）。</li>
+</ul>
+<h3 id="s15-open">子线待确认清单（来自 <code>private-customization-spec.md</code> §13「待确认与限制」） </h3>
+
+<ul>
+<li><strong>企业微信不能通过服务端 API 创建含用户的客户群</strong>（见第 16.3 节第 ② 步）。主路径需要顾问在客户端操作一次（方案 A），或预建群池（方案 B）。</li>
+<li><code>openEnterpriseChat</code> 创建时能放入的微信联系人数量：待核实（官方文档写含微信联系人时群成员不超过 40 人；2021 年开放社区回复说只能添加一个微信联系人）。</li>
+<li>修改客户群名的服务端接口：未查到，待核实。</li>
+<li>从网页 / 小程序直接跳进指定企业微信客户群的链接：未查到，待核实。</li>
+<li>本项目主体是否已开通企业微信「客户联系」功能、自建应用是否已配置到「客户联系 - 可调用接口的应用」：待确认。</li>
+<li>转人工的阈值（人数 / 预算）：没有公开参考值，待决策。</li>
+<li>夜间 / 节假日时效规则、首版方案的起算点：待决策。</li>
+<li>收费方式：待决策（第 16.9 节）。</li>
+<li>包车、导游在本文工具层里还没有定义；本文把它们当作人工处理项。</li>
+<li>顾问团队规模、值班安排：待确认；时效承诺必须以此为前提。</li>
+<li>照片上传与普通订单消息的载体：已决定（用户，2026-11-16），即微信小程序和网页版；相关措辞已统一为「小程序 / 网页内」（见 D-8）。</li>
+<li>三级兜底拼图的素材来源与版权；不用 AI 生图的拼图是否也要标注：待确认。</li>
+</ul>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s16">16. 私人定制交接（规划智能体 → 人工定制团队） <span class="layer l-sub">子线</span><span class="comp">私人定制交接</span></h2>
+<div class="card">
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code>（@ <code>006b093</code>）§1–§10 全文并入；§11 并入第 9 节，§12 并入 8.3 / 14.3，§13 并入第 15 节。原文的「文档说明」：本模块是规划子图（3.1）的延伸，沿用「意向单 + 人工确认」模式（1.3、4.2.1）：<strong>AI 不自动付款、不自动下单</strong>；标注「建议 / 推断 / 待核实 / 待决策」的含义同原文。</p>
+</blockquote>
+
+<blockquote>
+<p>渠道规则：<strong>企业微信群只用于私人定制人工交接；普通订单用小程序 / 网页内消息。</strong></p>
+</blockquote>
+
+<h3 id="s16-1">16.1 定位与边界 <span class="layer l-sub">子线</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §1「定位与边界」（@ <code>006b093</code>），节内交叉引用已改为本文节号。</p>
+</blockquote>
+<h4 id="s16-1-1">16.1.1 做什么 </h4>
+
+<ul>
+<li>只服务厦门（含鼓浪屿）行程。规划智能体负责收集需求、给出初稿；遇到交接信号时，把完整上下文打包交给人工定制顾问。</li>
+<li>顾问在企业微信里与用户沟通、出正式方案、做分项报价；用户确认后，才进入意向单 → 人工确认 → 付款流程。</li>
+<li>交接后，顾问的修改回写订单系统，AI 后续的推荐始终以最新版本为准（见第 16.3 节第 ⑤ 步）。</li>
+<li><strong>企业微信群只为私人定制人工交接开设。</strong> 普通订单（如酒店意向单的确认结果）用小程序 / 网页内消息通知用户，不建企业微信群（见第 16.7 节）。</li>
+</ul>
+<h4 id="s16-1-2">16.1.2 不做什么（边界） </h4>
+
+<ul>
+<li><strong>AI 不付款、不下单、不改单。</strong> 涉及付款或订单变更的节点一律转人工（与 本文 4.2.1「涉及支付和下单的节点必须人工确认」一致）。</li>
+<li><strong>不承诺做不到的时效。</strong> 对用户展示的时效必须是团队能稳定做到的（见第 16.5 节）。</li>
+<li><strong>不读微信聊天记录。</strong> 企业微信群内的聊天内容不回流给 AI（与 1.4 非目标「不强制用户授权邮箱或微信聊天记录」一致）；回流的只有顾问在订单系统里录入的结构化结果。</li>
+<li><strong>不跨城市。</strong> 非厦门需求只做礼貌说明，不承接（推断：与 1.1 目标「厦门本地深度」一致）。</li>
+</ul>
+<h4 id="s16-1-3">16.1.3 与其他组件的关系 </h4>
+
+<p><code>主链路（实时）：路由器 → 工作节点 → 规划子图
+                                   │ 交接信号（第 16.2 节）
+                                   ▼
+                     ① 交接摘要生成（结构化交接包，第 16.4 节）
+                                   │
+                     ② 建立沟通渠道（企业微信，第 16.3、16.7 节）
+                                   │
+                人工定制顾问 ──► 正式方案 / 分项报价 ──► 意向单 + 人工确认 ──► 付款
+                                   │
+                     ⑤ 回写订单系统 ──► 规划子图读取最新版本</code></p>
+
+<h3 id="s16-2">16.2 交接触发条件 <span class="layer l-sub">子线</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §2「交接触发条件」（@ <code>006b093</code>），节内交叉引用已改为本文节号。</p>
+</blockquote>
+<h4 id="s16-2-1">16.2.1 三个主触发（必做） </h4>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>触发</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T1</td>
+<td>用户主动要求「找定制师」</td>
+<td>对话中识别到意图，或点击固定入口按钮。任何时候都可以触发（参考 Black Tomato：对话中随时可点按钮转真人，见第 16.6.3 节）。</td>
+</tr>
+<tr>
+<td>T2</td>
+<td>用户提交需求单</td>
+<td>通过表单入口提交（字段见第 16.4.1 节），不经过 AI 对话也能直接触发。</td>
+</tr>
+<tr>
+<td>T3</td>
+<td>流程走到付款 / 订单变更，或识别到特殊事件</td>
+<td>付款、改单、退单一律转人工；特殊事件包括求婚、纪念日、生日、蜜月、团建、公司活动等。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="s16-2-2">16.2.2 附加触发（建议） </h4>
+
+<ul>
+<li><strong>建议</strong>：同行人里有老人、婴幼儿，或有人行动不便。</li>
+<li><strong>建议</strong>：需要包车或导游（本文工具层目前没有包车 / 导游工具）。</li>
+<li><strong>建议</strong>：AI 连续两轮未能满足用户提出的约束（例如预算、时间、酒店条件冲突，用户两次否决方案）。</li>
+<li><strong>建议</strong>：人数或预算超过运营设定的阈值。<strong>目前没有找到任何平台公开的转人工阈值</strong>，数值需要运营自己定（待决策）。</li>
+</ul>
+<h4 id="s16-2-3">16.2.3 触发时对用户说什么（建议） </h4>
+
+<ul>
+<li>明确告诉用户：「将由人工定制顾问接手，X 内联系你，X 内给出首版方案」（时效见第 16.5 节）。</li>
+<li>说明交接会带上哪些信息（第 16.4 节），并让用户确认同意，再生成交接包。</li>
+</ul>
+
+<h3 id="s16-3">16.3 五步设计 <span class="layer l-sub">子线</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §3「五步设计」（@ <code>006b093</code>），节内交叉引用已改为本文节号。</p>
+</blockquote>
+<p><code>① 生成结构化交接摘要 → ② 建立企业微信沟通渠道（顾问为群主）→ ③ 群命名：目的地 + 日期
+      → ④ 用户侧状态页（带入群入口）→ ⑤ 回写订单系统（AI 始终用最新版本）</code></p>
+<h4 id="s16-3-step1">① 生成结构化交接摘要 </h4>
+
+<ul>
+<li>收到交接信号后，规划智能体生成一份<strong>结构化交接包</strong>（JSON + 可读摘要），字段见第 16.4 节。</li>
+<li>每条事实带来源标签（沿用本文第 5 节防幻觉机制与 8.2 节「来源标签完整率 100%」）。</li>
+<li>交接包生成后进入顾问派单队列，并生成一个交接编号（<code>handoff_id</code>），贯穿后续所有步骤。</li>
+</ul>
+<h4 id="s16-3-step2">② 建立企业微信沟通渠道（顾问为群主） <span class="layer l-sub">子线</span><span class="comp">企业微信群</span></h4>
+
+<blockquote>
+<p>只有触发私人定制人工交接（第 16.2 节）时才执行本步；普通订单不建群，走小程序 / 网页内消息（见第 16.7 节）。</p>
+</blockquote>
+<p><strong>官方文档核实结果（2026-11-16 查阅，链接见 16.11）</strong></p>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>官方接口</th>
+<th>能做什么</th>
+<th>限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>创建内部群聊</td>
+<td><code>appchat/create</code></td>
+<td>服务端 API 建群，可指定 <code>owner</code>（群主）和 <code>name</code>（群名，最多 50 个 utf8 字符）</td>
+<td>只允许企业自建应用调用，应用可见范围必须是根部门；<code>userlist</code> 是企业成员编号（至少 2 人，最多 2000 人）；每企业每天最多建 1000 个群。<strong>群成员只能是企业成员，用户（微信外部联系人）不能加入。</strong></td>
+</tr>
+<tr>
+<td>客户群管理</td>
+<td>获取客户群列表 / 获取客户群详情 / 客户群 opengid 转换</td>
+<td>只读</td>
+<td>官方文档「客户群管理」目录下只有这三项，<strong>没有「创建客户群」接口</strong>。客户群详情文档原文：「客户群是由具有客户群使用权限的成员创建的外部群」。</td>
+</tr>
+<tr>
+<td>配置「加入群聊」</td>
+<td><code>externalcontact/groupchat/add_join_way</code></td>
+<td>为<strong>已存在</strong>的客户群生成进群二维码（<code>scene=2</code>）或小程序按钮（<code>scene=1</code>）；可带 <code>state</code>（≤30 字符）区分来源</td>
+<td><code>chat_id_list</code> 必填，最多 5 个群；<code>auto_create_room=1</code> 只在<strong>群满后</strong>自动新建群，群名是「<code>room_base_name</code> + 序号」，不能逐个指定；API 配置不在管理端展示；与「联系我」共用每企业 50 万个配置额度。</td>
+</tr>
+<tr>
+<td>配置「联系我」</td>
+<td><code>externalcontact/add_contact_way</code></td>
+<td>生成顾问个人的「联系我」二维码 / 小程序按钮，可带 <code>state</code>；支持临时会话模式（<code>is_temp</code>）</td>
+<td>临时会话模式只支持单个成员；临时会话二维码默认 7 天、最多 14 天有效。</td>
+</tr>
+<tr>
+<td>添加客户回调</td>
+<td>事件 <code>add_external_contact</code></td>
+<td>用户通过「联系我」添加顾问后，回调里带 <code>State</code>，可据此关联 <code>handoff_id</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>客户端建群</td>
+<td>JS-SDK（网页端开发工具包）<code>wx.qy.openEnterpriseChat</code></td>
+<td>在<strong>顾问的企业微信客户端</strong>（H5（移动网页）/ 侧边栏）里创建包含外部联系人的会话，可传 <code>groupName</code>；企业微信 3.0.36 起返回 <code>chatId</code></td>
+<td><code>externalUserIds</code> 必须来自 <code>selectExternalContact</code>（即用户已是该顾问的客户）；含微信联系人时群成员不超过 40 人；需要顾问在客户端里操作，<strong>不是纯服务端调用</strong>。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>与原设计的差异</strong></p>
+<ul>
+<li>原设计是「通过 API 直接创建包含用户的企业微信群，顾问为群主」。按官方文档，<strong>服务端 API 不能直接创建含微信用户的客户群</strong>：<code>appchat/create</code> 只能建企业内部群；客户群没有创建接口。</li>
+<li>第三方开发者文章（掘金）和微信开放社区的官方回复与此一致：服务端只能建内部群；外部用户只能扫码 / 点按钮入群，或由成员在客户端建群（见 16.11）。</li>
+</ul>
+<p><strong>可行方案（建议）</strong></p>
+<ul>
+<li>
+<p><strong>方案 A（建议作为主路径）：「联系我」+ 客户端一键建群</strong></p>
+<ol>
+<li>交接后，状态页展示指定顾问的「联系我」二维码 / 小程序按钮，<code>state = handoff_id</code>。</li>
+<li>用户添加顾问后，<code>add_external_contact</code> 回调带回 <code>State</code>，系统把用户的 <code>external_userid</code> 与 <code>handoff_id</code> 关联。</li>
+<li>顾问在企业微信侧边栏 H5 里点击「建群」，前端调用 <code>wx.qy.openEnterpriseChat</code>：<code>userIds</code> = 顾问（及需要的同事），<code>externalUserIds</code> = 该用户，<code>groupName</code> 按第 ③ 步命名。顾问作为发起人即群主（推断：发起人为群主，待核实）。</li>
+<li>返回的 <code>chatId</code> 写回交接记录，后续可用「获取客户群详情」读取群名和成员。</li>
+</ol>
+<ul>
+<li>优点：一客一群，群名可在创建时指定。缺点：需要顾问在客户端点一次，不是全自动。</li>
+<li>待核实：创建时能放入的微信联系人数量（官方文档写「群成员人数不能超过 40 人」；2021 年开放社区的回复说「只能添加一个微信联系人」，后续手动拉人）。同行人多于 1 人时，可能需要入群后再邀请或扫码。</li>
+</ul>
+</li>
+<li>
+<p><strong>方案 B（备选）：预建空客户群池 + 进群二维码</strong></p>
+<ol>
+<li>运营预先在企业微信客户端建一批空客户群（顾问为群主）。</li>
+<li>交接时分配一个空群，调用 <code>add_join_way</code>（<code>chat_id_list</code> = 该群，<code>state = handoff_id</code>），用 <code>get_join_way</code> 拿到 <code>qr_code</code> 展示在状态页。</li>
+<li>用户扫码入群；通过「获取客户群详情」里成员的 <code>state</code> 确认入群。</li>
+</ol>
+<ul>
+<li>缺点：要人工维护群池；<strong>群名改成「目的地 + 日期」需要顾问手动改，没有查到修改客户群名的服务端接口</strong>（待核实）。</li>
+</ul>
+</li>
+<li>
+<p><strong>方案 C（补充）：内部协作群</strong></p>
+<ul>
+<li>用 <code>appchat/create</code> 建<strong>内部</strong>协作群（顾问 + 运营 + 内部导游 / 司机，必须都是企业成员），群主、群名都可由 API 指定，用于内部协调，不放用户。</li>
+</ul>
+</li>
+</ul>
+<h4 id="s16-3-step3">③ 群命名：目的地 + 日期 </h4>
+
+<ul>
+<li>建议格式：<code>厦门·MMDD-MMDD·用户称呼</code>，例如「厦门·1201-1203·张女士」。<ul>
+<li>方案 A：创建时通过 <code>groupName</code> 指定。</li>
+<li>方案 B：分配后由顾问手动改名（API 改名待核实）。</li>
+<li>方案 C：<code>appchat/create</code> 的 <code>name</code> 字段，最长 50 个 utf8 字符。</li>
+</ul>
+</li>
+<li>群名不放手机号、订单号等敏感信息（建议）。</li>
+</ul>
+<h4 id="s16-3-step4">④ 用户侧状态页（链到群聊） </h4>
+
+<ul>
+<li>状态页显示：交接状态（已提交 / 已分配顾问 / 已联系 / 首版方案已出 / 已确认 / 已付款）、顾问名片、承诺时效倒计时、方案链接。</li>
+<li><strong>「进入群聊」入口</strong>：网页或小程序里<strong>没有查到能直接跳转到某个企业微信客户群的链接</strong>（待核实）。可行做法：<ul>
+<li>方案 A：展示顾问「联系我」二维码 / 小程序按钮，用户添加后由顾问拉群。</li>
+<li>方案 B：展示 <code>get_join_way</code> 返回的进群二维码；在微信小程序内可用 <code>scene=1</code> 的小程序插件按钮（需要小程序接入官方插件）。</li>
+</ul>
+</li>
+<li>本项目非目标是只做电脑网页 + 微信小程序（本文 1.4），状态页两端都要做。</li>
+</ul>
+<h4 id="s16-3-step5">⑤ 回写订单系统（AI 始终使用最新版本） </h4>
+
+<ul>
+<li>顾问出的每一版方案、报价、用户确认结果，都在订单系统里<strong>版本化</strong>保存（v1 初稿、v2 修改……），并带上 <code>handoff_id</code>。</li>
+<li>规划子图在这个用户后续的对话中，<strong>只读取最新确认版本</strong>；未确认版本标注「草案」，不能当成事实引用。</li>
+<li>回写由顾问在后台录入或确认，不从群聊内容自动抽取（与第 16.1.2 节一致）。</li>
+<li>方案中的酒店仍走意向单 + 人工确认（本文 4.2.1），确认结果回写同一订单。</li>
+</ul>
+
+<h3 id="s16-4">16.4 交接包内容 <span class="layer l-sub">子线</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §4「交接包内容」（@ <code>006b093</code>），节内交叉引用已改为本文节号。</p>
+</blockquote>
+<h4 id="s16-4-1">16.4.1 需求单字段（厦门版） </h4>
+
+<p><strong>必填</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>到达 / 离开时间与方式</td>
+<td>日期时间；航班或高铁（本平台不订机票 / 动车，只记录）</td>
+</tr>
+<tr>
+<td>同行人</td>
+<td>成人 / 老人 / 儿童人数，儿童写年龄</td>
+</tr>
+<tr>
+<td>预算区间</td>
+<td>人均每天或整趟，二选一</td>
+</tr>
+<tr>
+<td>住宿</td>
+<td>合作酒店偏好，或已订酒店</td>
+</tr>
+<tr>
+<td>联系方式与可联系时段</td>
+<td>电话 / 微信 / 短信，偏好时段</td>
+</tr>
+</tbody>
+</table>
+<p><strong>选填</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>出行目的 / 纪念日</td>
+<td>蜜月、生日、求婚、毕业、团建等</td>
+</tr>
+<tr>
+<td>兴趣</td>
+<td>鼓浪屿人文、闽南美食、土楼、海边、摄影等</td>
+</tr>
+<tr>
+<td>想要的感受</td>
+<td>自由文字（参考 Black Tomato「How do you want to feel?」（原文引用：你想要什么样的感受？））</td>
+</tr>
+<tr>
+<td>节奏</td>
+<td>半天 / 全天，步行强度</td>
+</tr>
+<tr>
+<td>用餐偏好与忌口</td>
+<td>—</td>
+</tr>
+<tr>
+<td>包车 / 导游 / 接送机</td>
+<td>是否需要</td>
+</tr>
+<tr>
+<td>特殊需求</td>
+<td>行动不便、婴儿车、轮椅等</td>
+</tr>
+<tr>
+<td>以前来过吗</td>
+<td>来过的话，想避开或补上什么（参考 A&K 需求问题）</td>
+</tr>
+<tr>
+<td>补充说明</td>
+<td>自由文字</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>字段依据：Scott Dunn 网上表单（目的地、成人 / 青少年 / 儿童人数、出发月份、人均预算档、跟进方式、可联系时段、自由文字）；A&K 的 10 个需求问题（预算、同行人与儿童年龄、目的地及是否去过、日期、纪念日、兴趣、用餐、节奏、酒店类型、行动限制）；Black Tomato「How do you want to feel?」（原文引用：你想要什么样的感受？）。</p>
+</blockquote>
+<h4 id="s16-4-2">16.4.2 交接包结构 </h4>
+
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>内容</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>需求单</td>
+<td>第 16.4.1 节字段（表单提交的原值，或 AI 从对话中抽取后经用户确认的值）</td>
+<td>用户</td>
+</tr>
+<tr>
+<td>完整 AI 对话</td>
+<td>本次会话全文 + 时间戳（参考 Black Tomato：员工可看到用户与 AI 的对话）</td>
+<td>会话记录（Redis / 记忆层）</td>
+</tr>
+<tr>
+<td>AI 初稿行程</td>
+<td>规划子图输出的 JSON 行程（2–3 套方案），每条事实带来源标签和校验时间戳</td>
+<td>规划子图</td>
+</tr>
+<tr>
+<td>用户否决的选项</td>
+<td>被否决的酒店、景点、方案，以及用户给出的理由</td>
+<td>会话记录</td>
+</tr>
+<tr>
+<td>合作酒店意向</td>
+<td>已生成的意向单及状态</td>
+<td>酒店意向单系统</td>
+</tr>
+<tr>
+<td>用户备注</td>
+<td>用户在交接前自己写给顾问的话</td>
+<td>用户</td>
+</tr>
+<tr>
+<td>系统标签</td>
+<td>触发原因（T1 / T2 / T3 / 附加触发）、<code>handoff_id</code>、建议的优先级</td>
+<td>系统</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>交接包生成后先给用户看摘要并征得同意，再发给顾问（建议）。</li>
+</ul>
+
+<h3 id="s16-5">16.5 时效承诺 <span class="layer l-sub">子线</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §5「时效承诺」（@ <code>006b093</code>），节内交叉引用已改为本文节号。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>节点</th>
+<th>承诺</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>首次联系</td>
+<td><strong>1 小时内</strong></td>
+<td>交接后由顾问主动联系（企业微信 / 电话）</td>
+</tr>
+<tr>
+<td>首版方案</td>
+<td><strong>1 天内</strong></td>
+<td>首次联系确认需求后起算（建议，起算点待决策）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>必须在交接时明确告诉用户</strong>这两个时效，并在状态页显示倒计时。</li>
+<li>夜间和节假日是否同样适用：待决策。参考飞猪商家规则，晚间提交的需求可以约定「次日上午某时前联系」（见第 16.6.2 节）。如果采用这类规则，也要在交接时说清楚（建议）。</li>
+<li>超时处理（建议）：倒计时到期未联系，自动提醒值班主管并改派；同时通知用户。</li>
+</ul>
+
+<h3 id="s16-6">16.6 参考模式 <span class="layer l-sub">子线</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §6「参考模式」（@ <code>006b093</code>），节内交叉引用已改为本文节号。</p>
+</blockquote>
+<h4 id="s16-6-1">16.6.1 携程定制（注意：资料来自 2017–2018 年） </h4>
+
+<ul>
+<li>平台定制服务标准：接单后 1 个工作小时内联系客人；4–16 小时内给出首次行程报价方案。</li>
+<li>「透明化报价」：交通、酒店、景点、餐食、定制服务费逐项拆分。</li>
+<li>报价必须拆分；供应商的机酒价格不得高于携程外网（溢价上限规则）。</li>
+<li>来源：中国消费者报 2017-08-31 https://zxb.ccn.com.cn/html/zxb/20170831/86369.html ；界面新闻（定制师认证）https://www.jiemian.com/article/2004968.html</li>
+</ul>
+<h4 id="s16-6-2">16.6.2 飞猪定制商家规则 </h4>
+
+<ul>
+<li>首呼：每天 9:00–21:00 产生的定制单 1 小时内完成首呼；21:00 至次日 9:00 产生的，次日 10:00 前完成。店铺首呼及时率要求 85% 以上。</li>
+<li>方案：先上传初版，再上传终版，用户确认后才付款。</li>
+<li>出发前 3 天：组建行程管家群（定制师、商家客服、司机、导游等）。</li>
+<li>行中：7×24 服务，突发问题 10 分钟内响应，1 小时内给出解决方案。</li>
+<li>来源（转载的商家规则）：http://news.558idc.com/287513.html （网页抓取工具可读；命令行工具 curl 访问返回 500）</li>
+</ul>
+<h4 id="s16-6-3">16.6.3 Black Tomato Feelings Engine（产品名，意为「感受引擎」） </h4>
+
+<ul>
+<li>用户用自己的话描述想要的感受，AI 基于自家数据推荐行程；对话中随时可以点按钮联系真人。</li>
+<li>详细行程和预订由人工团队完成；员工能看到用户与 AI 的对话，接手时了解客户需求。</li>
+<li>来源：TTG https://www.ttgmedia.com/luxury/black-tomato-launches-ai-feelings-engine-to-inspire-clients-50362 ；官方常见问题页（FAQ）https://www.blacktomato.com/faq/</li>
+</ul>
+
+<h3 id="s16-7">16.7 沟通渠道 <span class="layer l-sub">子线</span><span class="comp">企业微信群</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §7「沟通渠道」（@ <code>006b093</code>），节内交叉引用已改为本文节号。</p>
+</blockquote>
+<ul>
+<li><strong>渠道规则（用户决定）</strong>：企业微信群<strong>只用于私人定制人工交接</strong>（触发条件见第 16.2 节）。普通订单（不涉及人工定制的预订、酒店意向单确认结果等）一律用小程序 / 网页内消息通知，不建企业微信群。<ul>
+<li>已决定（用户，2026-11-16）：本项目只做微信小程序和网页版（本文 1.4），普通订单的消息渠道即小程序 / 网页内消息。</li>
+</ul>
+</li>
+<li><strong>主渠道：企业微信</strong>（方案 A / B，见第 16.3 节第 ② 步）。企业微信账号归企业所有，顾问离职时可以做客户 / 客户群继承（推断：企业微信有「在职继承 / 离职继承」相关接口，具体能力待核实）。</li>
+<li><strong>兜底渠道（建议）</strong>：<ul>
+<li><strong>电话</strong>：用户没有添加顾问、或 1 小时内企业微信未建立联系时，顾问直接电话联系（用户在需求单里留的号码）。</li>
+<li><strong>短信</strong>：发送状态页链接和顾问联系方式。</li>
+<li>用户在需求单里选的「跟进方式」优先（参考 Scott Dunn 表单：Email / Phone Call / Text（原文引用：邮件 / 电话 / 短信））。</li>
+</ul>
+</li>
+<li>所有联系动作记日志（与本文第 11 节「高危操作人工确认、日志留痕」一致）。</li>
+</ul>
+
+<h3 id="s16-8">16.8 照片收集流程 <span class="layer l-sub">子线</span><span class="comp">照片收集</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §8「照片收集流程」（@ <code>ea1daa0</code>），节内交叉引用已改为本文节号。</p>
+<p>本节是用户在通话中确定的设计，只覆盖用户照片的收集。</p>
+</blockquote>
+<h4 id="s16-8-1">16.8.1 用户照片的三级来源 </h4>
+
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>方式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一级（首选）</td>
+<td><strong>小程序 / 网页内相册引导</strong></td>
+<td>在微信小程序或网页版内，引导用户从手机相册选取照片上传。只读取用户选中的照片，逐次征得同意（与 <code>writing-agent-spec.md</code> 第 9 节「逐项同意」一致）。</td>
+</tr>
+<tr>
+<td>二级</td>
+<td><strong>顾问在企业微信群里索取</strong></td>
+<td>仅限已经进入私人定制人工交接、已有企业微信群的用户（见第 16.7 节）。顾问在群里请用户发照片，再由顾问上传到订单系统；群聊内容本身不回流给 AI（与第 16.1.2 节一致）。</td>
+</tr>
+<tr>
+<td>三级（兜底）</td>
+<td><strong>用行程数据生成拼图</strong></td>
+<td>用户没有提供照片时，用行程数据（站点、日期、路线等）生成一张拼图。<strong>这是平面拼图，不是 AR。</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>普通订单的用户没有企业微信群，只走一级和三级（推断：由第 16.7 节渠道规则直接得出）。</li>
+<li>三级拼图用到哪些素材（行程卡片、地图、平台自有图片等）：待确认。只使用平台有权使用的素材（建议）。</li>
+</ul>
+<h4 id="s16-8-2">16.8.2 AI 生成标注（硬规则） <span class="layer l-sub">子线</span><span class="comp">生图</span></h4>
+
+<ul>
+<li>兜底拼图如果用了 AI 生图，成品上必须<strong>清楚标注「AI 生成」</strong>，用户能直接看到，不能只写在元数据里。</li>
+<li>与本文第 11 节「生成合成内容标识：可见 + 隐式标识」一致；隐式标识同样保留。</li>
+<li>只用行程数据排版、没有用 AI 生图的拼图是否也要标注：待确认。</li>
+</ul>
+<h4 id="s16-8-3">16.8.3 渠道约束 </h4>
+
+<ul>
+<li>企业微信群只为私人定制人工交接开设（第 16.7 节）。不能为了索取照片，给普通订单用户单独建群。</li>
+<li>普通订单中与照片相关的通知（如提醒上传照片）走小程序 / 网页内消息（建议）。</li>
+</ul>
+
+<h3 id="s16-9">16.9 收费方式（待决策） <span class="layer l-sub">子线</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §9「收费方式（待决策）」（@ <code>006b093</code>），节内交叉引用已改为本文节号。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>参考</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. 按人天收服务费</td>
+<td>携程用户分享「服务费是每人每天 30」（dealmoon 帖子；链接用 curl 访问返回 403，未逐字核实）</td>
+<td>透明，但用户可能对「规划也收费」敏感</td>
+</tr>
+<tr>
+<td>B. 不收服务费，在价格里含利润</td>
+<td>Black Tomato 常见问题页：不收任何费用，靠协议价上加少量利润</td>
+<td>用户感知友好；需要有协议价空间</td>
+</tr>
+<tr>
+<td>C. 确认后收定金</td>
+<td>Scott Dunn：确认方案后交定金才开始预订</td>
+<td>可与 A / B 组合</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>本文第 12 节的收入模型里已有「私人定制介绍佣金」。本节选项与它的关系需要一起决定（待决策）。</li>
+<li>无论选哪种，报价都建议<strong>逐项拆分</strong>（参考携程「透明化报价」）。</li>
+</ul>
+
+<h3 id="s16-10">16.10 隐私与同意（建议） <span class="layer l-sub">子线</span></h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code> §10「隐私与同意（建议）」（@ <code>006b093</code>），节内交叉引用已改为本文节号。</p>
+</blockquote>
+<ul>
+<li>交接前展示将要发给顾问的内容摘要，用户同意后才发送。</li>
+<li>对话全文只给接手的顾问及其主管看，不进入公开内容或培训语料，除非用户另行同意。</li>
+<li>群名、状态页不显示手机号、证件号、订单号。</li>
+<li>用户可以撤回交接（关闭需求单）；撤回后顾问不再主动联系。</li>
+</ul>
+
+<h3 id="s16-11">16.11 参考来源 </h3>
+
+<blockquote>
+<p>来源：<code>private-customization-spec.md</code>「参考来源」。</p>
+</blockquote>
+<ul>
+<li>企业微信开发者中心 · 创建群聊会话（appchat/create）：https://developer.work.weixin.qq.com/document/path/90245</li>
+<li>企业微信开发者中心 · 客户联系「联系我」管理：https://developer.work.weixin.qq.com/document/path/92228</li>
+<li>企业微信开发者中心 · 客户群「加入群聊」管理：https://developer.work.weixin.qq.com/document/path/92229 （另一路径 https://developer.work.weixin.qq.com/document/path/99546 ）</li>
+<li>企业微信开发者中心 · 获取客户群列表：https://developer.work.weixin.qq.com/document/path/92120</li>
+<li>企业微信开发者中心 · 获取客户群详情：https://developer.work.weixin.qq.com/document/path/92122</li>
+<li>企业微信开发者中心 · 事件格式（add_external_contact / State）：https://developer.work.weixin.qq.com/document/path/92130</li>
+<li>企业微信开发者中心 · wx.qy.openEnterpriseChat：https://developer.work.weixin.qq.com/document/path/96967</li>
+<li>微信开放社区问答（服务端仅支持创建内部群聊）：https://developers.weixin.qq.com/community/develop/doc/0004ceea8946e0319a2c7e0ef56000</li>
+<li>掘金 · 企微 JS-SDK 实现客户群创建方案（第三方实践，非官方）：https://juejin.cn/post/7592887786967711780</li>
+<li>中国消费者报 2017-08-31（携程定制透明化报价与服务标准）：https://zxb.ccn.com.cn/html/zxb/20170831/86369.html</li>
+<li>界面新闻（携程定制师认证，2018）：https://www.jiemian.com/article/2004968.html</li>
+<li>飞猪定制游商家规则（转载）：http://news.558idc.com/287513.html</li>
+<li>TTG · Black Tomato launches AI 'feelings engine'（原文标题：Black Tomato 推出 AI「感受引擎」）：https://www.ttgmedia.com/luxury/black-tomato-launches-ai-feelings-engine-to-inspire-clients-50362</li>
+<li>Black Tomato 常见问题页（FAQ）：https://www.blacktomato.com/faq/</li>
+<li>Scott Dunn · Plan Your Trip（原文页名：规划行程；表单字段）：https://www.scottdunn.com/plan-your-trip</li>
+<li>Scott Dunn · How to Book（原文页名：如何预订；定金）：https://www.scottdunn.com/about/travel-centre/booking</li>
+<li>Abercrombie & Kent · Luxury Tailor Made（原文名：奢华定制）需求问题（代理商资料）：https://www.abercrombiekent.com/api/download?id=file-a802075f7903b3999e15d118715c7769007c6a87-pdf</li>
+<li>本仓库：本文第 1.3、1.4、3.1、4.2.1、4.6、5、8.2、9、11、12 节；<code>writing-agent-spec.md</code> 第 9 节（隐私与同意）</li>
+</ul>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+<h2 id="s17">17. 智能体形态 + 可穿戴智能眼镜对接 <span class="layer l-sub">子线</span><span class="comp">智能眼镜入口</span></h2>
+<div class="card">
+<blockquote>
+<p>v2 新增（用户 2026-11-16 提出）。本章是规划，不改变第 1–16 节的既有决定；标注「建议 / 待核实 / 待确认」的含义同前文。厂商能力只引用官方开发者文档（见 17.9），文档没写的一律标「待核实」，不推测硬件规格。层级标为<span class="layer l-sub">子线</span>是本文的推断，见第 15 节 D-10。</p>
+</blockquote>
+<h3 id="s17-1">17.1 智能体优先的呈现方式 <span class="layer l-sub">子线</span></h3>
+
+<ul>
+<li>对外呈现为一个<strong>厦门旅行智能体</strong>，而不只是微信小程序和网页版这两个界面。小程序和网页版是智能体的两个入口；眼镜端是未来的第三个入口。</li>
+<li>三个入口共用同一套主链路：路由器 → 工作节点 → 主循环 → 规划子图 / 讲解子图（第 2、3 节）。入口只负责输入输出形态（屏幕、语音、摄像头），不复制业务逻辑（建议）。</li>
+<li>与 1.4 非目标一致：不做原生手机客户端。眼镜端如果必须配套手机端程序（见 17.2 各厂商的接入方式），是否构成对 1.4 的例外：待确认。</li>
+</ul>
+<h3 id="s17-2">17.2 目标设备与厂商开放平台 <span class="layer l-sub">子线</span></h3>
+
+<table>
+<thead>
+<tr>
+<th>厂商 / 系列</th>
+<th>官方开发者入口</th>
+<th>公开文档写明的接入方式</th>
+<th>对本项目的意义</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Rokid</strong>（如 Rokid Glasses，系统 YodaOS-Sprite）</td>
+<td>Rokid 开放平台、Rokid 开发者文档（CXR SDK）</td>
+<td>CXR-L SDK：手机端 SDK（Android / iOS，公开），经 Rokid 官方手机端应用获取眼镜的图像、音频、显示和按键能力，可双向收发指令。CXR-M SDK：手机端 SDK（Android），支持实时音视频推流、自定义眼镜端界面、TTS（语音合成）、自定义指令，<strong>需商务合作获取，不公开</strong>。CXR-S SDK：眼镜端数据通道。另可在眼镜端「裸机开发」（基于 AOSP Android Go，可管理按键、IMU（惯性测量单元）、摄像头）。Rokid 另有 AIUI Studio（智能体创作平台）。</td>
+<td>4.5 已写明由雷鸟 / Rokid 等眼镜的 SDK 自己渲染；Rokid 文档明确提到可替换眼镜流程中的 AI 模型（CXR-M），与「主模型用 Qwen」的路线可能兼容（待核实）</td>
+<td>走 CXR-L 还是 CXR-M：待确认；CXR-M 需商务对接</td>
+</tr>
+<tr>
+<td><strong>「千万」</strong>（用户口径：按 Rokid 系列处理）</td>
+<td>同 Rokid</td>
+<td>同 Rokid</td>
+<td>同 Rokid</td>
+<td><strong>待确认</strong>：可能是「千问」的口误，即阿里的千问 / 夸克 AI 眼镜（见下一行）。若是千问眼镜，与本项目的 Qwen 主模型同源，更契合</td>
+</tr>
+<tr>
+<td><strong>雷鸟 RayNeo</strong>（X 系列、Air 系列、V 系列）</td>
+<td>雷鸟开放平台、RayNeo 开发手册</td>
+<td>X 系列：Android ARDK（AR 开发工具包）/ Unity ARDK，应用独立运行在眼镜端；常见问题页写明可用 Android Camera2 接口取摄像头画面。Air 系列：Unity SDK。V 系列（AI 拍摄眼镜）：AI Studio，可创建 AI 智能体。上架需在开放平台提交并经审核</td>
+<td>适合「眼镜端独立运行 + 摄像头取帧」的方案；国内机型内置助手的底座模型：待核实（仅第三方资料提到，未见官方说明）</td>
+<td>选哪个系列：待确认</td>
+</tr>
+<tr>
+<td><strong>千问 / 夸克 AI 眼镜</strong>（阿里巴巴）</td>
+<td>千问 AI 硬件开放平台</td>
+<td>两个子平台：技能平台（个人 / 企业开发者，开发并发布技能到公开市场、个人设备或企业定制机）和行业开放平台（企业，线下对接）。企业可接入镜端、云端、手机端三端能力；手机端 SDK 提供拍照、录像、实时视频流、麦克风录音等。官方工具「开启音视频推流」把眼镜音视频推到 RTC（实时音视频通信）服务，第三方经 SSE（服务端推送事件）长连接下发 <code>SPEAK</code> / <code>STOP_OUTPUT</code>（功能公测中；文档写明视频规格 720P、每秒 2 帧）</td>
+<td>与 Qwen 主模型同源；「技能」形态最贴近本章的智能体优先路线</td>
+<td>公测功能的稳定性、费用、审核周期：待核实</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>夸克 AI 眼镜与千问 AI 眼镜由同一团队开发、后续新系列统一用「千问」品牌，这一点来自财联社报道（非官方文档），待核实。</li>
+<li>各厂商硬件规格（续航、摄像头分辨率、显示规格等）本文<strong>不写</strong>，以官方页面为准。</li>
+</ul>
+<h3 id="s17-3">17.3 语音交互入口 <span class="layer l-sub">子线</span></h3>
+
+<ul>
+<li>眼镜端语音作为智能体的主入口：唤醒 → 说话 → 主模型 <strong>Qwen3.8 Omni Flash Realtime</strong>（4.1）处理语音和函数调用→ 语音回答（建议）。</li>
+<li>主模型语音不可用时，按 4.1 切到 MOSS TTS + 转写备份通道。</li>
+<li>指标沿用 14.2：语音首包 < 800 毫秒、端到端 P95（第 95 百分位时延）< 2 秒。眼镜到手机、手机到云端多出的链路时延：待测。</li>
+<li>音频怎样从眼镜到达本系统：Rokid 经 CXR SDK 的音频能力；雷鸟 X 系列由眼镜端应用直接采集；千问眼镜可走「开启音频推流」工具（RTC）。具体选型：待确认。</li>
+</ul>
+<h3 id="s17-4">17.4 实时视觉：眼镜摄像头作为视觉输入 <span class="layer l-sub">子线</span></h3>
+
+<ul>
+<li>眼镜摄像头画面作为视觉输入，用于「看到什么讲什么」：识别眼前的历史建筑 / 打卡点，触发讲解子图（3.2，分支线）。</li>
+<li>定位沿用 4.5：GPS 粗定位缩小候选 → 摄像头画面做 CLIP 匹配精确定位；匹配 931 栋档案中约 50 栋的轻量空间锚点。</li>
+<li>模型分工沿用 4.1：实时视频走 <strong>MOSS-VL-Realtime</strong>（第三期上线，走云 API）；重的图片理解交给 <strong>Nex N2.6</strong> 异步子智能体。</li>
+<li>默认低频取帧、按需触发，而不是持续推高清视频流（建议）；成本计入 10.2 / 10.3。千问眼镜官方推流规格为 720P、每秒 2 帧（见 17.2），其他厂商的取帧规格：待核实。</li>
+<li>眼镜端只渲染结构化结果，「看见什么」由本系统控制，「怎么看见」由眼镜 SDK 控制（与 4.5 一致）；不做全岛 3D 预建模。</li>
+</ul>
+<h3 id="s17-5">17.5 与六层的对接 <span class="layer l-sub">子线</span></h3>
+
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>眼镜对接时的职责（建议）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.1 模型层<span class="layer l-top">顶层</span></td>
+<td>语音 + 函数调用用 Qwen Omni Realtime；实时视频用 MOSS-VL-Realtime；重图理解用 Nex N2.6；备份语音用 MOSS TTS + 转写。厂商自带的助手模型不替代本系统的主模型</td>
+</tr>
+<tr>
+<td>4.2 工具层<span class="layer l-top">顶层</span></td>
+<td>眼镜端不新增业务工具；复用酒店、餐厅、行程、高德 MCP（模型上下文协议）等工具。支付、下单仍需人工确认，眼镜端只做提醒，不做支付</td>
+</tr>
+<tr>
+<td>4.3 编排层（路由器）</td>
+<td>新增「眼镜」入口适配器：把语音 / 画面事件转成统一的会话输入，再由路由器分进规划或讲解子图；3 秒超时、重试 1 次、降级打标规则不变</td>
+</tr>
+<tr>
+<td>4.4 记忆层</td>
+<td>会话状态与小程序 / 网页共用同一用户会话（Redis，TTL 30 分钟）；摄像头画面默认不入长期记忆（见 17.7）</td>
+</tr>
+<tr>
+<td>4.5 视觉层</td>
+<td>输出结构化讲解卡片 / 路线提示，由眼镜 SDK 渲染；沿用约 50 栋轻量锚点</td>
+</tr>
+<tr>
+<td>4.6 监控层</td>
+<td>为眼镜入口单独打 OTel（OpenTelemetry 可观测性标准）追踪片段标签：设备类型、链路时延、取帧次数、降级原因；只记录不阻塞</td>
+</tr>
+</tbody>
+</table>
+<h3 id="s17-6">17.6 离线 / 在线模式切换 <span class="layer l-sub">子线</span></h3>
+
+<ul>
+<li><strong>在线</strong>：完整链路（语音 → 云端主模型 → 工具 → 回答 / 讲解）。</li>
+<li><strong>弱网 / 离线</strong>（建议）：鼓浪屿等景区可能信号不稳（待实测）。离线时只提供事先缓存的内容：当天行程、已下载的讲解卡片和锚点数据；不做实时价格、库存类回答（硬信息必须在线双源校验，第 5 节）。</li>
+<li>切换规则（建议）：网络探测失败或 3 秒超时即进入离线模式并明确告知用户「当前离线，只能提供已缓存内容」；恢复后自动回到在线模式。</li>
+<li>端侧能否运行本地语音识别 / 合成以支撑离线对话：取决于厂商 SDK，待核实。</li>
+</ul>
+<h3 id="s17-7">17.7 摄像头隐私与同意（建议） <span class="layer l-sub">子线</span></h3>
+
+<ul>
+<li>首次使用摄像头视觉功能前单独征得同意；可随时关闭（与 <code>writing-agent-spec.md</code> 第 9 节「逐项同意」一致）。</li>
+<li>默认不保存原始画面；只保留识别结果（建筑编号、时间）。如需保存画面（例如用于照片收集，16.8），另行征得同意。</li>
+<li>识别到的路人人脸不做识别、不入库（建议）；画面上传前是否需要端侧打码：待确认。</li>
+<li>摄像头工作时以眼镜的指示灯 / 提示音提示周围人（取决于设备，待核实）。</li>
+<li>数据驻留沿用 4.1：境内或新加坡；第三方 RTC 推流链路的数据去向：待核实。</li>
+</ul>
+<h3 id="s17-8">17.8 待确认清单 <span class="layer l-sub">子线</span></h3>
+
+<ul>
+<li>「千万」是否为「千问」的口误：待确认（目前按用户口径归为 Rokid 系列）。</li>
+<li>首发支持哪家眼镜、走哪种 SDK（Rokid CXR-L / CXR-M；雷鸟 X 系列眼镜端独立应用；千问技能平台 / 行业开放平台）：待确认。</li>
+<li>眼镜端若需配套手机端程序，是否作为 1.4「只做微信小程序和网页版」的例外：待确认。</li>
+<li>各厂商的商务门槛、审核周期、费用：待核实。</li>
+<li>眼镜链路的端到端时延、取帧成本：待测。</li>
+</ul>
+<h3 id="s17-9">17.9 参考来源 </h3>
+
+<ul>
+<li>Rokid 开发者文档（SDK 选型：CXR-L / CXR-M / 裸机开发）：https://developerdoc.rokid.com/sdk</li>
+<li>Rokid 开发者文档 · YodaOS-Sprite：https://developerdoc.rokid.com/sprite?lang=zh</li>
+<li>Rokid Glasses 开发指南：https://ar.rokid.com/sdk/glasses</li>
+<li>Rokid 开放平台（YodaOS、CXR SDK、AIUI Studio）：https://open.rokid.com/?lang=cn</li>
+<li>雷鸟开放平台：https://open.rayneo.cn/</li>
+<li>RayNeo 开发手册 · 概览：https://rayneo.gitbook.io/rayneo-devdoc</li>
+<li>RayNeo 开发手册 · ARDK 下载：https://rayneo.gitbook.io/rayneo-devdoc/x-xi-lie/android-kai-fa/ardk-xia-zai</li>
+<li>RayNeo 开发手册 · SDK 常见问题（摄像头取帧）：https://rayneo.gitbook.io/rayneo-devdoc/chang-jian-wen-ti/faq/kai-fa-wen-ti-sdk</li>
+<li>千问 AI 硬件开放平台 · 开放平台整体简介：https://device.qianwen.com/docs/qwen/6668302</li>
+<li>千问 AI 硬件开放平台 · 手机端能力开放（SDK）：https://device.qianwen.com/docs/qwen/6668299</li>
+<li>千问 AI 硬件开放平台 · 开启音视频推流：https://device.qianwen.com/docs/qwen/6820210</li>
+<li>新浪财经转财联社（2026-02-27，夸克与千问 AI 眼镜同团队，非官方）：https://finance.sina.com.cn/roll/2026-02-27/doc-inhpftik6717334.shtml</li>
+</ul>
+
+<p><em>厦门版 Odessia 开发规格文档 · 合并版 v2 · 2026-11-16 · 基线：<code>consolidated-spec.md</code>（@ 5609b36，首次提交 81dc15d）+ <code>private-customization-spec.md</code>（@ 006b093）+ <code>writing-agent-spec.md</code> §11（@ 9b65939）· 原始来源：xiamen-odessia-spec <code>index.html</code> @ 8c0d610 / f1d15eb / dceb7a9 / b559096 · 内部测试优先</em></p>
+<p class="back"><a href="#toc">↑ 返回目录</a></p>
+</div>
+
+  <div class="footer">
+    厦门版 Odessia 开发规格文档 · 合并版 v2 · 网页版 · 内部测试优先
+  </div>
+</div>
+</body>
+</html>

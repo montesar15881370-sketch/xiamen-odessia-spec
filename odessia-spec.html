@@ -40,6 +40,8 @@
   blockquote p { margin: 6px 0; }
   pre { background: #21262d; padding: 12px; border-radius: 8px; overflow-x: auto; }
   code { background: #21262d; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  .rev { display: inline; background: #2d1f3d; border: 1px dashed #a371f7; border-radius: 6px; padding: 1px 6px; color: #e2d4f7; }
+  .rev-tag { display: inline-block; background: #a371f7; color: #0f1419; font-size: 0.72em; font-weight: 600; padding: 1px 8px; border-radius: 10px; margin: 0 6px 0 2px; vertical-align: middle; }
   .back { text-align: right; font-size: 0.85em; margin: 16px 0 0; }
   .back a { text-decoration: none; }
   .footer { margin-top: 60px; color: var(--muted); font-size: 0.85em; text-align: center; }
@@ -52,16 +54,18 @@
 
   <div class="legend">
     <strong>层级图例</strong>
-    <p><span class="layer l-top">顶层</span>主线和子线共用的底座：<a href="#s4-1">4.1 模型层</a>、<a href="#s4-2">4.2 工具层</a></p>
-    <p><span class="layer l-main">主线</span>实时主链路及其直接支撑：路由器 → 工作节点 → 主循环 → <a href="#s3-1">3.1 规划子图</a>、编排 / 记忆 / 视觉 / 监控层、防幻觉机制，以及 <a href="#s10-3">10.3 成本与时延</a></p>
+    <p><span class="layer l-top">顶层</span>主线和子线共用的底座：<a href="#s4-1">4.1 模型层</a>、<a href="#s4-2">4.2 工具层</a>（其中具体业务插件按 <a href="#s4-2-3">4.2.3</a> 归入子线）</p>
+    <p><span class="layer l-main">主线</span><strong>行程规划本身</strong>：<a href="#s3-1">3.1 规划子图</a>（收集需求 → 检索 → 生成 2–3 套行程 → 硬信息校验 → 输出）</p>
     <p><span class="layer l-branch">分支线</span>从主线分出的分支：<a href="#s3-2">3.2 讲解子图</a></p>
-    <p><span class="layer l-sub">子线</span>主线之外的智能体和流程：<span class="comp">生图</span><a href="#s16-8-2">16.8.2</a>　<span class="comp">照片收集</span><a href="#s16-8">16.8</a>　<span class="comp">企业微信群</span><a href="#s16-3-step2">16.3 ②</a> / <a href="#s16-7">16.7</a>　<span class="comp">私人定制交接</span><a href="#s16">第 16 节</a>　<span class="comp">写作智能体</span><a href="#s3-3">3.3</a>　<span class="comp">反馈智能体</span><a href="#s7-2">7.2</a>　<span class="comp">知识运营管道</span><a href="#s7-1">7.1</a>　<span class="comp">智能眼镜入口</span><a href="#s17">第 17 节</a></p>
-    <p class="muted">层级口径见 <a href="#s1-5">1.5 主线 / 子线 分层说明</a>；第 12 节商业层不标注。</p>
+    <p><span class="layer l-sub">子线</span>可插拔，替换时不动主线。目的地服务：<span class="comp">酒店</span><a href="#s4-2-1">4.2.1</a> / <a href="#s4-2-3">4.2.3</a>　<span class="comp">支付</span><a href="#s4-2-3">4.2.3</a>　<span class="comp">门票</span><a href="#s4-2-3">4.2.3</a>　<span class="comp">自驾导航</span><a href="#s4-2-3">4.2.3</a>　<span class="comp">私人定制交接</span><a href="#s16">第 16 节</a>　<span class="comp">注册</span><a href="#s1-6">1.6</a></p>
+    <p style="padding-left:58px">其他子线：<span class="comp">写作智能体</span><a href="#s3-3">3.3</a> / <a href="#s10-3">10.3</a>　<span class="comp">反馈智能体</span><a href="#s7-2">7.2</a>　<span class="comp">知识运营管道</span><a href="#s7-1">7.1</a>　<span class="comp">生图</span><a href="#s16-8-2">16.8.2</a>　<span class="comp">照片收集</span><a href="#s16-8">16.8</a>　<span class="comp">企业微信群</span><a href="#s16-3-step2">16.3 ②</a> / <a href="#s16-7">16.7</a>　<span class="comp">智能眼镜入口</span><a href="#s17">第 17 节</a></p>
+    <p><span class="rev-tag">v2 范围修订 · 2026-11-16</span>标出 2026-11-16 范围修订改动或新增的内容；修订前的原文保留在说明里。决策见 <a href="#d-11">D-11</a>，闭环范围见 <a href="#s1-6">1.6</a>。</p>
+    <p class="muted">层级口径见 <a href="#s1-5">1.5 主线 / 子线 分层说明</a>。路由器、编排、记忆、视觉、监控层和防幻觉机制属于公共设施，不标注；第 12 节商业层也不标注。</p>
   </div>
 
   <div class="toc" id="toc">
     <strong>目录</strong>
-    <ul><li><a href="#s1">1. 项目定位、核心原则与非目标</a> </li><ul><li><a href="#s1-1">1.1 目标</a> </li><li><a href="#s1-2">1.2 核心护城河</a> </li><li><a href="#s1-3">1.3 核心原则</a> </li><li><a href="#s1-4">1.4 非目标（明确不做）</a> </li><li><a href="#s1-5">1.5 主线 / 子线 分层说明（v2 新增）</a> </li></ul><li><a href="#s2">2. 整体架构（路由器—工作节点编排框架）</a> </li><li><a href="#s3">3. 三个子图</a> </li><ul><li><a href="#s3-1">3.1 行程规划子图（进主循环）</a> <span class="layer l-main">主线</span></li><ul><li><a href="#s3-1-1">3.1.1 私人定制交接概要</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s3-2">3.2 讲解子图（旁路触发，不进主循环的工具选择）</a> <span class="layer l-branch">分支线</span></li><li><a href="#s3-3">3.3 离线反馈智能体（独立离线，不进主链路）</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s4">4. 六层详细规格</a> </li><ul><li><a href="#s4-1">4.1 模型层</a> <span class="layer l-top">顶层</span></li><li><a href="#s4-2">4.2 工具层</a> <span class="layer l-top">顶层</span></li><ul><li><a href="#s4-2-1">4.2.1 酒店接入：分阶段路径</a> </li><li><a href="#s4-2-2">4.2.2 酒店推荐维度（正式清单）</a> </li></ul><li><a href="#s4-3">4.3 编排层（编排框架）</a> </li><li><a href="#s4-4">4.4 记忆层</a> </li><li><a href="#s4-5">4.5 视觉层</a> </li><li><a href="#s4-6">4.6 监控层</a> </li></ul><li><a href="#s5">5. 防幻觉机制</a> </li><li><a href="#s6">6. 视频教训落地（视频《Wander with Mira》）</a> </li><li><a href="#s7">7. 离线部分</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s7-1">7.1 知识运营离线管道</a> <span class="layer l-sub">子线</span></li><li><a href="#s7-2">7.2 反馈收集智能体（独立离线，不进主链路）</a> <span class="layer l-sub">子线</span></li><li><a href="#s7-3">7.3 人工审核时限（SLA，服务水平约定）</a> </li><li><a href="#s7-4">7.4 版本控制</a> </li></ul><li><a href="#s8">8. 评测集（评测为一等公民）与数据质量门禁</a> </li><ul><li><a href="#s8-1">8.1 四类评测集</a> </li><li><a href="#s8-2">8.2 数据质量指标（写死）</a> </li><li><a href="#s8-3">8.3 子线评测与验收（私人定制交接 / 企业微信 / 照片收集）</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s9">9. 失败模式目录（每个组件四种返回）</a> </li><li><a href="#s10">10. 成本</a> </li><ul><li><a href="#s10-1">10.1 三套成本方案与切换条件</a> </li><li><a href="#s10-2">10.2 月成本模型（MVP，估算）</a> </li><li><a href="#s10-3">10.3 成本与时延</a> <span class="layer l-main">主线</span></li></ul><li><a href="#s11">11. 合规清单（内部测试阶段可暂缓）</a> </li><li><a href="#s12">12. 库存即服务商业层（独立于六层）</a> </li><li><a href="#s13">13. 任务依赖图、审查优先级与双向追溯</a> </li><ul><li><a href="#s13-1">13.1 任务依赖图（P0 / P1 / P2）</a> </li><li><a href="#s13-2">13.2 双向追溯</a> </li></ul><li><a href="#s14">14. 开发顺序与验收指标</a> </li><ul><li><a href="#s14-1">14.1 开发顺序</a> </li><li><a href="#s14-2">14.2 MVP 验收指标</a> </li><li><a href="#s14-3">14.3 子线验收（建议）</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s15">15. 决策记录 / 矛盾说明</a> </li><ul><li><a href="#d-1">D-1：视频模型的部署位置（云 API 与本地 4090）</a> </li><li><a href="#d-2">D-2：合并规则</a> </li><li><a href="#d-3">D-3：酒店后续接入选项</a> </li><li><a href="#d-4">D-4：v2 的生成方式与编号（v2 新增）</a> </li><li><a href="#d-5">D-5：主线 / 子线 标注口径（v2 新增）</a> </li><li><a href="#d-6">D-6：写作智能体是离线子线，其「成本与时延」却标为主线（v2 新增）</a> </li><li><a href="#d-7">D-7：两份子规格文档的引用口径（v2 新增）</a> </li><li><a href="#d-8">D-8：消息与照片渠道的载体（小程序和网页版）与非目标（v2 新增，已决定）</a> </li><li><a href="#d-9">D-9：企业微信建群与原设计的差异（v2 新增）</a> </li><li><a href="#d-10">D-10：智能体形态与智能眼镜对接的层级（v2 新增）</a> </li><li><a href="#s15-open">子线待确认清单（来自 <code>private-customization-spec.md</code> §13「待确认与限制」）</a> </li></ul><li><a href="#s16">16. 私人定制交接（规划智能体 → 人工定制团队）</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-1">16.1 定位与边界</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-1-1">16.1.1 做什么</a> </li><li><a href="#s16-1-2">16.1.2 不做什么（边界）</a> </li><li><a href="#s16-1-3">16.1.3 与其他组件的关系</a> </li></ul><li><a href="#s16-2">16.2 交接触发条件</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-2-1">16.2.1 三个主触发（必做）</a> </li><li><a href="#s16-2-2">16.2.2 附加触发（建议）</a> </li><li><a href="#s16-2-3">16.2.3 触发时对用户说什么（建议）</a> </li></ul><li><a href="#s16-3">16.3 五步设计</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-3-step1">① 生成结构化交接摘要</a> </li><li><a href="#s16-3-step2">② 建立企业微信沟通渠道（顾问为群主）</a> <span class="layer l-sub">子线</span><span class="comp">企业微信群</span></li><li><a href="#s16-3-step3">③ 群命名：目的地 + 日期</a> </li><li><a href="#s16-3-step4">④ 用户侧状态页（链到群聊）</a> </li><li><a href="#s16-3-step5">⑤ 回写订单系统（AI 始终使用最新版本）</a> </li></ul><li><a href="#s16-4">16.4 交接包内容</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-4-1">16.4.1 需求单字段（厦门版）</a> </li><li><a href="#s16-4-2">16.4.2 交接包结构</a> </li></ul><li><a href="#s16-5">16.5 时效承诺</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-6">16.6 参考模式</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-6-1">16.6.1 携程定制（注意：资料来自 2017–2018 年）</a> </li><li><a href="#s16-6-2">16.6.2 飞猪定制商家规则</a> </li><li><a href="#s16-6-3">16.6.3 Black Tomato Feelings Engine（产品名，意为「感受引擎」）</a> </li></ul><li><a href="#s16-7">16.7 沟通渠道</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-8">16.8 照片收集流程</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-8-1">16.8.1 用户照片的三级来源</a> </li><li><a href="#s16-8-2">16.8.2 AI 生成标注（硬规则）</a> <span class="layer l-sub">子线</span><span class="comp">生图</span></li><li><a href="#s16-8-3">16.8.3 渠道约束</a> </li></ul><li><a href="#s16-9">16.9 收费方式（待决策）</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-10">16.10 隐私与同意（建议）</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-11">16.11 参考来源</a> </li></ul><li><a href="#s17">17. 智能体形态 + 可穿戴智能眼镜对接</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s17-1">17.1 智能体优先的呈现方式</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-2">17.2 目标设备与厂商开放平台</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-3">17.3 语音交互入口</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-4">17.4 实时视觉：眼镜摄像头作为视觉输入</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-5">17.5 与六层的对接</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-6">17.6 离线 / 在线模式切换</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-7">17.7 摄像头隐私与同意（建议）</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-8">17.8 待确认清单</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-9">17.9 参考来源</a> </li></ul></ul>
+    <ul><li><a href="#s1">1. 项目定位、核心原则与非目标</a> </li><ul><li><a href="#s1-1">1.1 目标</a> </li><li><a href="#s1-2">1.2 核心护城河</a> </li><li><a href="#s1-3">1.3 核心原则</a> </li><li><a href="#s1-4">1.4 非目标（明确不做）</a> </li><li><a href="#s1-5">1.5 主线 / 子线 分层说明（v2 新增）</a> </li><li><a href="#s1-6">1.6 目的地闭环范围</a> <span class="rev-tag">v2 范围修订</span></li></ul><li><a href="#s2">2. 整体架构（路由器—工作节点编排框架）</a> </li><li><a href="#s3">3. 三个子图</a> </li><ul><li><a href="#s3-1">3.1 行程规划子图（进主循环）</a> <span class="layer l-main">主线</span></li><ul><li><a href="#s3-1-1">3.1.1 私人定制交接概要</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s3-2">3.2 讲解子图（旁路触发，不进主循环的工具选择）</a> <span class="layer l-branch">分支线</span></li><li><a href="#s3-3">3.3 离线反馈智能体（独立离线，不进主链路）</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s4">4. 六层详细规格</a> </li><ul><li><a href="#s4-1">4.1 模型层</a> <span class="layer l-top">顶层</span></li><li><a href="#s4-2">4.2 工具层</a> <span class="layer l-top">顶层</span></li><ul><li><a href="#s4-2-1">4.2.1 酒店接入：分阶段路径</a> <span class="layer l-sub">子线</span><span class="comp">酒店</span></li><li><a href="#s4-2-2">4.2.2 酒店推荐维度（正式清单）</a> </li><li><a href="#s4-2-3">4.2.3 子线插件：酒店 / 支付 / 门票 / 自驾导航</a> <span class="rev-tag">v2 范围修订</span><span class="layer l-sub">子线</span></li></ul><li><a href="#s4-3">4.3 编排层（编排框架）</a> </li><li><a href="#s4-4">4.4 记忆层</a> </li><li><a href="#s4-5">4.5 视觉层</a> </li><li><a href="#s4-6">4.6 监控层</a> </li></ul><li><a href="#s5">5. 防幻觉机制</a> </li><li><a href="#s6">6. 视频教训落地（视频《Wander with Mira》）</a> </li><li><a href="#s7">7. 离线部分</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s7-1">7.1 知识运营离线管道</a> <span class="layer l-sub">子线</span></li><li><a href="#s7-2">7.2 反馈收集智能体（独立离线，不进主链路）</a> <span class="layer l-sub">子线</span></li><li><a href="#s7-3">7.3 人工审核时限（SLA，服务水平约定）</a> </li><li><a href="#s7-4">7.4 版本控制</a> </li></ul><li><a href="#s8">8. 评测集（评测为一等公民）与数据质量门禁</a> </li><ul><li><a href="#s8-1">8.1 四类评测集</a> </li><li><a href="#s8-2">8.2 数据质量指标（写死）</a> </li><li><a href="#s8-3">8.3 子线评测与验收（私人定制交接 / 企业微信 / 照片收集）</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s9">9. 失败模式目录（每个组件四种返回）</a> </li><li><a href="#s10">10. 成本</a> </li><ul><li><a href="#s10-1">10.1 三套成本方案与切换条件</a> </li><li><a href="#s10-2">10.2 月成本模型（MVP，估算）</a> </li><li><a href="#s10-3">10.3 成本与时延</a> <span class="layer l-sub">子线</span><span class="comp">写作智能体</span></li></ul><li><a href="#s11">11. 合规清单（内部测试阶段可暂缓）</a> </li><li><a href="#s12">12. 库存即服务商业层（独立于六层）</a> </li><li><a href="#s13">13. 任务依赖图、审查优先级与双向追溯</a> </li><ul><li><a href="#s13-1">13.1 任务依赖图（P0 / P1 / P2）</a> </li><li><a href="#s13-2">13.2 双向追溯</a> </li></ul><li><a href="#s14">14. 开发顺序与验收指标</a> </li><ul><li><a href="#s14-1">14.1 开发顺序</a> </li><li><a href="#s14-2">14.2 MVP 验收指标</a> </li><li><a href="#s14-3">14.3 子线验收（建议）</a> <span class="layer l-sub">子线</span></li></ul><li><a href="#s15">15. 决策记录 / 矛盾说明</a> </li><ul><li><a href="#d-1">D-1：视频模型的部署位置（云 API 与本地 4090）</a> </li><li><a href="#d-2">D-2：合并规则</a> </li><li><a href="#d-3">D-3：酒店后续接入选项</a> </li><li><a href="#d-4">D-4：v2 的生成方式与编号（v2 新增）</a> </li><li><a href="#d-5">D-5：主线 / 子线 标注口径（v2 新增）</a> </li><li><a href="#d-6">D-6：写作智能体是离线子线，其「成本与时延」却标为主线（v2 新增）</a> </li><li><a href="#d-7">D-7：两份子规格文档的引用口径（v2 新增）</a> </li><li><a href="#d-8">D-8：消息与照片渠道的载体（小程序和网页版）与非目标（v2 新增，已决定）</a> </li><li><a href="#d-9">D-9：企业微信建群与原设计的差异（v2 新增）</a> </li><li><a href="#d-10">D-10：智能体形态与智能眼镜对接的层级（v2 新增）</a> </li><li><a href="#d-11">D-11：范围修订——主线收窄为行程规划，目的地服务全部归子线（v2 新增，2026-11-16）</a> </li><li><a href="#s15-open">子线待确认清单（来自 <code>private-customization-spec.md</code> §13「待确认与限制」）</a> </li></ul><li><a href="#s16">16. 私人定制交接（规划智能体 → 人工定制团队）</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-1">16.1 定位与边界</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-1-1">16.1.1 做什么</a> </li><li><a href="#s16-1-2">16.1.2 不做什么（边界）</a> </li><li><a href="#s16-1-3">16.1.3 与其他组件的关系</a> </li></ul><li><a href="#s16-2">16.2 交接触发条件</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-2-1">16.2.1 三个主触发（必做）</a> </li><li><a href="#s16-2-2">16.2.2 附加触发（建议）</a> </li><li><a href="#s16-2-3">16.2.3 触发时对用户说什么（建议）</a> </li></ul><li><a href="#s16-3">16.3 五步设计</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-3-step1">① 生成结构化交接摘要</a> </li><li><a href="#s16-3-step2">② 建立企业微信沟通渠道（顾问为群主）</a> <span class="layer l-sub">子线</span><span class="comp">企业微信群</span></li><li><a href="#s16-3-step3">③ 群命名：目的地 + 日期</a> </li><li><a href="#s16-3-step4">④ 用户侧状态页（链到群聊）</a> </li><li><a href="#s16-3-step5">⑤ 回写订单系统（AI 始终使用最新版本）</a> </li></ul><li><a href="#s16-4">16.4 交接包内容</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-4-1">16.4.1 需求单字段（厦门版）</a> </li><li><a href="#s16-4-2">16.4.2 交接包结构</a> </li></ul><li><a href="#s16-5">16.5 时效承诺</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-6">16.6 参考模式</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-6-1">16.6.1 携程定制（注意：资料来自 2017–2018 年）</a> </li><li><a href="#s16-6-2">16.6.2 飞猪定制商家规则</a> </li><li><a href="#s16-6-3">16.6.3 Black Tomato Feelings Engine（产品名，意为「感受引擎」）</a> </li></ul><li><a href="#s16-7">16.7 沟通渠道</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-8">16.8 照片收集流程</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s16-8-1">16.8.1 用户照片的三级来源</a> </li><li><a href="#s16-8-2">16.8.2 AI 生成标注（硬规则）</a> <span class="layer l-sub">子线</span><span class="comp">生图</span></li><li><a href="#s16-8-3">16.8.3 渠道约束</a> </li></ul><li><a href="#s16-9">16.9 收费方式（待决策）</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-10">16.10 隐私与同意（建议）</a> <span class="layer l-sub">子线</span></li><li><a href="#s16-11">16.11 参考来源</a> </li></ul><li><a href="#s17">17. 智能体形态 + 可穿戴智能眼镜对接</a> <span class="layer l-sub">子线</span></li><ul><li><a href="#s17-1">17.1 智能体优先的呈现方式</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-2">17.2 目标设备与厂商开放平台</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-3">17.3 语音交互入口</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-4">17.4 实时视觉：眼镜摄像头作为视觉输入</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-5">17.5 与六层的对接</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-6">17.6 离线 / 在线模式切换</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-7">17.7 摄像头隐私与同意（建议）</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-8">17.8 待确认清单</a> <span class="layer l-sub">子线</span></li><li><a href="#s17-9">17.9 参考来源</a> </li></ul></ul>
   </div>
 
 <blockquote>
@@ -93,6 +97,7 @@
 <h3 id="s1-1">1.1 目标 </h3>
 
 <p>做厦门（含鼓浪屿）本地深度的 AI（人工智能）旅行智能体，覆盖<strong>行程规划 + 智能讲解</strong>两项能力。不复制"全球一句话订行程"，而是做<strong>地头库存 + 真实导游经验</strong>这个别人替代不了的一层。</p>
+<p><span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>主线只指<strong>行程规划本身</strong>；酒店、门票、支付、自驾导航、私人定制、注册都是可插拔的子线，范围限定在厦门目的地闭环内，见 1.5、1.6 与第 15 节 D-11。</span></p>
 <h3 id="s1-2">1.2 核心护城河 </h3>
 
 <ul>
@@ -104,37 +109,38 @@
 
 <ul>
 <li><strong>自建库优先</strong>：外部 MCP（模型上下文协议，如高德、抖音本地生活、携程 / 飞猪）只做兜底，不得覆盖本地判断。</li>
-<li><strong>酒店下单走「意向单 + 人工确认」</strong>：不做实时扣库存的裸奔平台。</li>
+<li><strong>酒店下单按酒店配置两种接入模式</strong>：直连 PMS 的酒店，下单成功即实时锁房（前台看板实时显示）；没有 PMS 接口的酒店，走「意向单 + 人工确认」兜底。两种模式并存，按酒店配置（见 4.2.1、4.2.3）。不做没有接口、也没有人工确认的实时扣库存裸奔平台。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>原文为「酒店下单走「意向单 + 人工确认」：不做实时扣库存的裸奔平台」；依据 <code>hotel-frontdesk-note.md</code> 第 5 节修订。</span></li>
 <li><strong>规格文档先行</strong>：给 Bot / Cursor 的一切输入都必须可执行、可验收。</li>
 <li><strong>内部关门测试先跑通</strong>：不上线，暂不办 ICP（互联网信息服务备案）/ 算法备案（见第 11 节）。</li>
 </ul>
 <h3 id="s1-4">1.4 非目标（明确不做） </h3>
 
 <ul>
-<li>不做全球一句话订机票酒店。</li>
-<li>不对接酒店 PMS（酒店物业管理系统）实时扣库存。</li>
+<li>不做全球一句话订机票酒店；只做厦门目的地闭环（见 1.6）。</li>
+<li>不要求所有酒店都对接 PMS（酒店物业管理系统）；没有 PMS 接口的酒店不做实时扣库存，走意向单兜底。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>原文为「不对接酒店 PMS 实时扣库存」；现在直连 PMS 的酒店可实时锁房，见 1.3、4.2.1。</span></li>
 <li>只做微信小程序和网页版（电脑网页 + 微信小程序），不做原生手机客户端。</li>
 <li>不做全岛 3D 预建模。</li>
 <li>不强制用户授权邮箱或微信聊天记录。</li>
 <li>不在运行时自动修改知识库，入库必须人工审核。</li>
-<li>不提供机票 / 动车工具，游客自订。</li>
+<li>不提供机票 / 动车 / 高铁工具，游客自订。</li>
 <li>不接美团外卖。</li>
 </ul>
 <h3 id="s1-5">1.5 主线 / 子线 分层说明（v2 新增） </h3>
 
 <p>按用户指定的标注口径：</p>
 <ul>
-<li><strong>顶层</strong>：4.1 模型层、4.2 工具层。它们是主线和子线共用的底座，单独列在最上层，不归入主线或子线。</li>
-<li><strong>主线</strong>：实时主链路及其直接支撑。<ul>
-<li>路由器 → 工作节点 → 主循环 → 规划子图（3.1），以及编排层（4.3）、记忆层（4.4）、视觉层（4.5）、监控层（4.6）、防幻觉机制（第 5 节）。</li>
-<li><strong>成本与时延</strong>（10.3，引自 <code>writing-agent-spec.md</code> §11）按用户要求标为主线。</li>
+<li><strong>顶层</strong>：4.1 模型层、4.2 工具层。它们是主线和子线共用的底座，单独列在最上层，不归入主线或子线。（4.2 中的具体业务插件按 4.2.3 归入子线。）</li>
+<li><strong>主线</strong>：<strong>行程规划本身</strong>，即规划子图（3.1）：收集需求与偏好 → 检索 → 生成 2–3 套行程 → 硬信息校验 → 输出。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>原定义为「实时主链路及其直接支撑」，包括路由器 → 工作节点 → 主循环 → 规划子图，以及编排层、记忆层、视觉层、监控层、防幻觉机制，并把 10.3 成本与时延标为主线。见第 15 节 D-11。</span><ul>
+<li>路由器 / 工作节点 / 主循环（第 2 节）、编排层（4.3）、记忆层（4.4）、视觉层（4.5）、监控层（4.6）、防幻觉机制（第 5 节）是主线运行依赖的公共设施，不再单独算作主线，也不标注（推断，见 D-11）。</li>
+<li>10.3 成本与时延出自写作智能体，改标为子线（见 D-11）。</li>
 </ul>
 </li>
 <li><strong>分支线</strong>：从主线分出的分支，不同于主线之外的子线。<ul>
 <li>讲解子图（3.2）：主线的分支线。</li>
 </ul>
 </li>
-<li><strong>子线</strong>：主线之外的所有智能体和流程，一律标注<span class="layer l-sub">子线</span>：<ul>
+<li><strong>子线</strong>：主线之外的所有智能体和流程，一律标注<span class="layer l-sub">子线</span>。子线都是<strong>可插拔的</strong>：可以替换、增减，不需要改动主线。<ul>
+<li><strong>目的地服务类子线<span class="rev-tag">v2 范围修订 · 2026-11-16</span></strong>：酒店（4.2.1、4.2.3，双模式接入）、门票（4.2.3，景区门票直接入园）、支付（4.2.3，微信 / 支付宝 MCP，目的地本地支付）、自驾导航（4.2.3，高德 MCP 导航）、私人定制（3.1.1、第 16 节）、注册（用户注册 / 登录，细节待定义）</li>
 <li>私人定制交接（3.1 概要、第 16 节全文）</li>
 <li>企业微信群（16.3 第 ② 步、16.7）：<strong>只用于私人定制人工交接；普通订单用小程序 / 网页内消息</strong></li>
 <li>照片收集流程（16.8），含三级照片来源</li>
@@ -147,6 +153,22 @@
 <li>第 12 节库存即服务是「独立于六层」的商业层，不是智能体或流程，本文不给它加主线 / 子线标注。</li>
 <li>讲解子图是主线的分支线（用户 2026-11-16 决定）；商业层不标注，是本文对用户口径的理解（推断），见第 15 节 D-5。</li>
 </ul>
+<h3 id="s1-6">1.6 目的地闭环范围 <span class="rev-tag">v2 范围修订 · 2026-11-16</span></h3>
+
+<ul>
+<li><strong>只做厦门目的地闭环</strong>：不订机票，不订动车 / 高铁；游客自行到达厦门，到达后的服务由本系统闭环。</li>
+<li><strong>主线</strong>：行程规划本身（3.1）。</li>
+<li><strong>子线（可插拔，替换时不动主线）</strong>：<ul>
+<li><strong>酒店</strong>：按酒店配置接入模式。<code>PMS直连</code> → 下单成功即实时锁房，前台看板实时显示入住人、房间、入住 / 离店日期、确认号（见 <code>hotel-frontdesk-note.md</code>）；<code>意向单</code> → 意向单 + 人工确认兜底。两种并存（4.2.1、4.2.3）。</li>
+<li><strong>支付</strong>：作为酒店子线的支付环节，走微信支付 MCP、支付宝 MCP；所有支付都是<strong>目的地本地支付</strong>。</li>
+<li><strong>门票</strong>：厦门目的地本地的景区门票，直接入园；不属于主线。</li>
+<li><strong>自驾导航</strong>：目的地服务，用高德 MCP 导航，属于范围内的子线。</li>
+<li><strong>私人定制</strong>：人工定制交接（3.1.1、第 16 节）。</li>
+<li><strong>注册</strong>：用户注册 / 登录（细节待定义）。</li>
+</ul>
+</li>
+<li>决策记录见第 15 节 D-11。</li>
+</ul>
 <p class="back"><a href="#toc">↑ 返回目录</a></p>
 </div>
 <h2 id="s2">2. 整体架构（路由器—工作节点编排框架） </h2>
@@ -156,7 +178,7 @@
 <li><strong>路由器（接待员）</strong>：无状态。只看哪个窗口空闲，把会话（会话编号）分过去，不办业务。</li>
 <li><strong>工作节点（窗口）</strong>：每个窗口是一个完整的 LangGraph 实例，背后是同一套工作站（图 + 节点 + 插件）。会话状态全部放在 Redis，窗口之间不共享私有状态。</li>
 <li><strong>主循环子图</strong>：模型节点（Qwen 选工具）→ 工具执行节点（跑插件）→ 结果回填节点，循环到模型判断「答完了」为止。</li>
-<li><strong>插件工具箱</strong>：六个核心插件，分别是酒店查询、餐厅查询、行程生成（编排框架内函数）、高德 MCP、微信 MCP、支付宝 MCP。</li>
+<li><strong>插件工具箱</strong>：六个核心插件，分别是酒店查询、餐厅查询、行程生成（编排框架内函数）、高德 MCP、微信 MCP、支付宝 MCP。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>酒店、支付、自驾导航以及新增的门票都按子线插件管理，可替换、不动主线，见 1.6、4.2.3。</span></li>
 <li><strong>记忆检索插件</strong>：统一入口，按场景路由到不同语义库。</li>
 <li><strong>意图分叉</strong>：主图先看意图，再分进<strong>规划子图</strong>或<strong>讲解子图</strong>。<strong>反馈收集智能体</strong> 和<strong>知识运营管道</strong>在离线侧运行，不进主链路。</li>
 <li><strong>监控</strong>：每个节点挂 OTel（OpenTelemetry 可观测性标准）追踪片段，旁路记录，不干预主流程。</li>
@@ -167,7 +189,7 @@
 <h2 id="s3">3. 三个子图 </h2>
 <div class="card">
 <p>主图先看意图，再分进不同的车间。车间之间各干各的，不抢资源。<strong>路由规则写死，不让模型自己猜</strong>：「帮我排三天」走规划子图；「这是什么房子」走讲解子图。</p>
-<h3 id="s3-1">3.1 行程规划子图（进主循环） <span class="layer l-main">主线</span></h3>
+<h3 id="s3-1">3.1 行程规划子图（进主循环） <span class="layer l-main">主线</span><span class="comp">行程规划本身</span></h3>
 
 <ul>
 <li><strong>任务类型</strong>：任务型，输入是槽位约束 + 实时库存 + 价格区间。</li>
@@ -205,7 +227,7 @@
 <h3 id="s3-3">3.3 离线反馈智能体（独立离线，不进主链路） <span class="layer l-sub">子线</span><span class="comp">反馈智能体</span><span class="comp">写作智能体</span></h3>
 
 <p>详见第 7.2 节。知识运营离线管道同属离线部分，见第 7.1 节。</p>
-<p>写作智能体<span class="layer l-sub">子线</span>是反馈收集智能体的离线同级智能体（行程结束后自动生成游记，用户确认后才同步到公众号 / 小红书等），详见 <code>writing-agent-spec.md</code>。其 §11「成本与时延」按用户口径标为主线，并入本文 10.3（见第 15 节 D-6）。</p>
+<p>写作智能体<span class="layer l-sub">子线</span>是反馈收集智能体的离线同级智能体（行程结束后自动生成游记，用户确认后才同步到公众号 / 小红书等），详见 <code>writing-agent-spec.md</code>。其 §11「成本与时延」按用户口径标为主线，并入本文 10.3（见第 15 节 D-6）。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>10.3 已改标为子线，见 D-11。</span></p>
 <p class="back"><a href="#toc">↑ 返回目录</a></p>
 </div>
 <h2 id="s4">4. 六层详细规格 </h2>
@@ -253,19 +275,19 @@
 
 <p><strong>插件清单</strong></p>
 <ul>
-<li><strong>酒店查询</strong>：自建轻量系统，约 20 家合作酒店的结构化卡片。下单生成意向单，人工确认后回传。不对接 PMS。分阶段接入见下文。</li>
+<li><strong>酒店查询</strong><span class="layer l-sub">子线</span><span class="comp">酒店</span>：自建轻量系统，约 20 家合作酒店的结构化卡片。按酒店配置接入模式：<code>PMS直连</code> 的酒店下单成功即实时锁房；<code>意向单</code> 的酒店生成意向单，人工确认后回传。分阶段接入见下文。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>原文为「下单生成意向单，人工确认后回传。不对接 PMS」。</span></li>
 <li><strong>餐厅查询</strong>：双库。自建踩点库优先（小吃、老字号、烟火气），外部联网兜底。</li>
 <li><strong>行程生成</strong>：编排框架内函数（见 3.1）。</li>
-<li><strong>高德 MCP</strong>：POI、地理编码、路径规划。</li>
-<li><strong>支付</strong>：微信 MCP + 支付宝 MCP，密钥和风控交给支付通道方。</li>
+<li><strong>高德 MCP</strong>：POI、地理编码、路径规划；自驾导航子线也走高德 MCP（见 4.2.3）。</li>
+<li><strong>支付</strong><span class="layer l-sub">子线</span><span class="comp">支付</span>：微信 MCP + 支付宝 MCP，密钥和风控交给支付通道方；作为酒店子线的支付环节，均为目的地本地支付（见 4.2.3）。</li>
 </ul>
 <p><strong>规则</strong></p>
 <ul>
-<li>无机票 / 动车工具；不接美团外卖。</li>
+<li>无机票 / 动车 / 高铁工具；不接美团外卖。</li>
 <li>查询优先级写死：<strong>自建库 &gt; 外部 MCP</strong>。</li>
 <li><strong>硬信息强制双源校验</strong>：时间、价格、库存这类硬信息，必须有两个来源交叉校验（如自建库 + 官方 / 高德），并带时间戳。</li>
 </ul>
-<h4 id="s4-2-1">4.2.1 酒店接入：分阶段路径 </h4>
+<h4 id="s4-2-1">4.2.1 酒店接入：分阶段路径 <span class="layer l-sub">子线</span><span class="comp">酒店</span></h4>
 
 <p><strong>阶段 1：联盟深链兜底</strong></p>
 <ul>
@@ -273,17 +295,19 @@
 <li>这与"自建库优先、外部只做兜底"一致。</li>
 <li>具体走哪个联盟（携程联盟 / 美团联盟 / 飞猪等）属于<strong>建议</strong>，需要确认资质门槛。</li>
 </ul>
-<p><strong>阶段 2：约 20 家合作酒店结构化卡片 + 人工确认的意向单（主路径）</strong></p>
+<p><strong>阶段 2：约 20 家合作酒店结构化卡片 + 双模式接入（主路径）</strong></p>
 <ul>
-<li>不对接 PMS（见非目标）。</li>
-<li>用户选定后生成意向单，由人工向酒店确认房态和价格，确认后回传用户。</li>
+<li>每家酒店配置一个字段 <strong>接入模式</strong>：<code>PMS直连</code> / <code>意向单</code>。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>原文为「约 20 家合作酒店结构化卡片 + 人工确认的意向单（主路径）」「不对接 PMS（见非目标）」；依据 <code>hotel-frontdesk-note.md</code> 第 5 节，两种模式并存。</span></li>
+<li><strong><code>PMS直连</code></strong>：智能体下单成功的那一刻锁房；酒店前台不装 AI，只看实时房态看板（入住人、房号 / 房型、入住 / 离店日期、确认号），见 <code>hotel-frontdesk-note.md</code>。</li>
+<li><strong><code>意向单</code>（没有 PMS 接口的酒店，兜底）</strong>：沿用下面原有流程。</li>
+<li><code>意向单</code> 模式：用户选定后生成意向单，由人工向酒店确认房态和价格，确认后回传用户。</li>
 <li>涉及支付和下单的节点必须人工确认（与拟人化交互合规、监控层的敏感路径一致）。</li>
 </ul>
 <p><strong>后续可选（建议，非四个版本原文，来自此前的酒店接入调研）</strong></p>
 <ul>
 <li>合作方规模变大后，可以评估<strong>民宿 PMS / 渠道管理器开放平台</strong>，比如云掌柜开放平台（支持"各类预订平台直连、自动落单排房、同步库存房价"）、订单来了（全渠道直连 / 开放平台）。以"预订平台"身份接入，就不用逐家维护房态。</li>
 <li>需要扩大覆盖时，可以评估<strong>飞猪酒店通用分销 API</strong>（需要企业支付宝 + 淘宝企业账号，申请"大 C 账号"，由飞猪业务线下协助）或<strong>道旅 Dida</strong>（流程是签 保密协议（NDA） → 测试账号 → 问卷 → 开发会议 → 测试订单认证 → 正式额度；测试账号 QPS（每秒查询数）为 10）。道旅对厦门国内酒店的覆盖需要另行确认。</li>
-<li>以上与当前非目标"不对接 PMS 实时扣库存"冲突的部分，必须先修订规格文档的非目标再实施。</li>
+<li>以上与当前非目标"不对接 PMS 实时扣库存"冲突的部分，必须先修订规格文档的非目标再实施。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>该非目标已修订为「不要求所有酒店都对接 PMS」，见 1.4；上述平台仍属建议，接入前需评估。</span></li>
 </ul>
 <h4 id="s4-2-2">4.2.2 酒店推荐维度（正式清单） </h4>
 
@@ -306,6 +330,45 @@
 </ol>
 <p><strong>合规底线（准入条件，不参与打分）</strong>：民宿是否已完成备案、能否正常做公安入住登记。不满足的不进推荐池。</p>
 <p><strong>数据来源提醒</strong>：评论类维度优先使用供应商随库存提供的内容、自己的住后回访和合作方授权数据；不抓取携程、美团等平台评论。</p>
+<h4 id="s4-2-3">4.2.3 子线插件：酒店 / 支付 / 门票 / 自驾导航 <span class="rev-tag">v2 范围修订 · 2026-11-16</span><span class="layer l-sub">子线</span><span class="comp">酒店</span><span class="comp">支付</span><span class="comp">门票</span><span class="comp">自驾导航</span></h4>
+
+<blockquote>
+<p>这些插件都是子线：可插拔、可替换，替换时不改动主线（3.1 行程规划）。主线只通过统一的工具接口调用它们。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>子线</th>
+<th>内容</th>
+<th>关键配置 / 规则</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>酒店</td>
+<td>合作酒店查询与下单</td>
+<td>每家酒店配置 <strong>接入模式</strong>：<code>PMS直连</code>（下单成功即实时锁房，前台看板）/ <code>意向单</code>（人工确认兜底）；两者并存</td>
+</tr>
+<tr>
+<td>支付</td>
+<td>酒店子线的支付环节</td>
+<td>微信支付 MCP + 支付宝 MCP；所有支付都是<strong>目的地本地支付</strong>；AI 不代付，由用户本人在微信 / 支付宝内确认（推断，见 D-11）</td>
+</tr>
+<tr>
+<td>门票</td>
+<td>厦门本地景区门票，直接入园</td>
+<td>不属于主线；供应渠道、检票方式：待确认</td>
+</tr>
+<tr>
+<td>自驾导航</td>
+<td>目的地服务</td>
+<td>高德 MCP 导航；属于范围内的子线</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>范围：不订机票、动车 / 高铁（见 1.6）。私人定制、注册同为子线，分别见第 16 节、1.6。</li>
+</ul>
 <h3 id="s4-3">4.3 编排层（编排框架） </h3>
 
 <ul>
@@ -655,10 +718,10 @@
 <li><strong>Redis</strong>：小实例免费试用。</li>
 <li><strong>目标</strong>：MVP 阶段月成本 <strong>&lt; 500 元</strong>。</li>
 </ul>
-<h3 id="s10-3">10.3 成本与时延 <span class="layer l-main">主线</span><span class="comp">成本与时延</span></h3>
+<h3 id="s10-3">10.3 成本与时延 <span class="layer l-sub">子线</span><span class="comp">写作智能体</span></h3>
 
 <blockquote>
-<p>来源：<code>writing-agent-spec.md</code> §11「成本与时延」（@ <code>9b65939</code>），原文照录。按用户口径标为主线（与原文「离线异步、不占用主链路」的表述存在张力，见第 15 节 D-6）。原文中的 <code>consolidated-spec.md</code> 14.2 / 10.2 与本文 14.2 / 10.2 节号一致。</p>
+<p>来源：<code>writing-agent-spec.md</code> §11「成本与时延」（@ <code>9b65939</code>），原文照录。按用户口径标为主线（与原文「离线异步、不占用主链路」的表述存在张力，见第 15 节 D-6）。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>主线改为「行程规划本身」后，本节随写作智能体改标为子线，见 D-11。</span>原文中的 <code>consolidated-spec.md</code> 14.2 / 10.2 与本文 14.2 / 10.2 节号一致。</p>
 </blockquote>
 <ul>
 <li><strong>性质</strong>：离线异步任务，<strong>没有实时要求</strong>，不占用主链路的首包 / P95（第 95 百分位时延）指标预算（主链路指标见 <code>consolidated-spec.md</code> 14.2）。</li>
@@ -828,7 +891,7 @@
 </ul>
 <h3 id="d-3">D-3：酒店后续接入选项 </h3>
 
-<p>4.2.1 中的「后续可选」（云掌柜、订单来了、飞猪分销、道旅）来自此前的调研，属于<strong>建议</strong>，与非目标「不对接 PMS 实时扣库存」存在张力。实施前必须先修订非目标。</p>
+<p>4.2.1 中的「后续可选」（云掌柜、订单来了、飞猪分销、道旅）来自此前的调研，属于<strong>建议</strong>，与非目标「不对接 PMS 实时扣库存」存在张力。实施前必须先修订非目标。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>非目标已修订，见 1.4、D-11。</span></p>
 <h3 id="d-4">D-4：v2 的生成方式与编号（v2 新增） </h3>
 
 <ul>
@@ -839,7 +902,7 @@
 <h3 id="d-5">D-5：主线 / 子线 标注口径（v2 新增） </h3>
 
 <ul>
-<li>标注按用户指定口径：4.1、4.2 为顶层；成本与时延为主线；主线之外的智能体 / 流程（生图、企业微信群、私人定制交接、写作智能体、反馈智能体等）为子线。</li>
+<li>标注按用户指定口径：4.1、4.2 为顶层；成本与时延为主线；主线之外的智能体 / 流程（生图、企业微信群、私人定制交接、写作智能体、反馈智能体等）为子线。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>主线改为「行程规划本身」，成本与时延改标子线；新增酒店、门票、支付、自驾导航、注册为子线，见 D-11。</span></li>
 <li>讲解子图（3.2）是主线的分支线，由用户于 2026-11-16 决定，不再是推断。</li>
 <li>用户没有逐项点名的部分，由本文归类（推断）：知识运营离线管道（7.1）归子线；第 12 节商业层不加标注。如与用户本意不符，以用户为准。</li>
 <li>「顶层」的含义：本文理解为 4.1、4.2 是主线和子线共用的底座，不归入任何一线（推断）。</li>
@@ -848,7 +911,7 @@
 
 <ul>
 <li><strong>矛盾</strong>：<code>writing-agent-spec.md</code> §1.2 写明写作智能体「不进主链路」；§11 原文写明它是「离线异步任务，没有实时要求，不占用主链路的首包 / P95 指标预算」。而用户要求把「成本与时延」标为主线。</li>
-<li><strong>决定</strong>：按用户口径，10.3 标为主线；写作智能体本身仍标为子线（3.3）。</li>
+<li><strong>决定</strong>：按用户口径，10.3 标为主线；写作智能体本身仍标为子线（3.3）。<span class="rev"><span class="rev-tag">v2 范围修订 · 2026-11-16</span>本决定已被 D-11 取代：10.3 改标为子线，矛盾随之消除。</span></li>
 <li><strong>说明</strong>（推断）：可以理解为「成本与时延」这一核算维度归主线统一管理（例如都计入 10.2 的 MVP 月成本目标 &lt; 500 元），而不是说写作智能体进入实时主链路。写作智能体不占用 14.2 的首包 / P95 预算这一点不变。</li>
 </ul>
 <h3 id="d-7">D-7：两份子规格文档的引用口径（v2 新增） </h3>
@@ -874,6 +937,21 @@
 <li>第 17 节「智能体形态 + 可穿戴智能眼镜对接」由用户于 2026-11-16 提出，作为新章节追加，不改动第 1–16 节编号。</li>
 <li>层级标为<span class="layer l-sub">子线</span>是本文的推断：眼镜是新增入口，复用主链路而不改变它，且属于未来规划。如果用户认为眼镜入口应属主线或分支线，以用户为准。</li>
 <li>「千万」按用户口径归为 Rokid 系列；是否为「千问」的口误：待确认（见 17.8）。</li>
+</ul>
+<h3 id="d-11">D-11：范围修订——主线收窄为行程规划，目的地服务全部归子线（v2 新增，2026-11-16） </h3>
+
+<ul>
+<li><strong>决定人</strong>：用户（Feng）决定，mao789 确认；酒店双模式依据 <code>hotel-frontdesk-note.md</code> 第 5 节。</li>
+<li><strong>主线定义</strong>：旧「主线 = 实时主链路及其直接支撑（路由器 → 工作节点 → 主循环 → 规划子图，以及编排、记忆、视觉、监控层与防幻觉机制；10.3 成本与时延也标为主线）」→ 新「主线 = 行程规划本身（3.1 规划子图）」。</li>
+<li><strong>公共设施的归类</strong>（推断）：路由器 / 工作节点、编排层、记忆层、视觉层、监控层、防幻觉机制不再算主线，作为公共设施不标注（与第 12 节商业层同样处理）；4.1、4.2 仍为顶层。如用户另有归类，以用户为准。</li>
+<li><strong>10.3 成本与时延</strong>：旧<span class="layer l-main">主线</span>→ 新<span class="layer l-sub">子线</span><span class="comp">写作智能体</span>。内容出自写作智能体，与新定义一致；D-6 的矛盾随之消除。</li>
+<li><strong>新增子线（可插拔，替换不动主线）</strong>：酒店、门票、支付、自驾导航、私人定制（原已是子线）、注册（新增，细节待定义）。见 1.5、1.6、4.2.3。</li>
+<li><strong>酒店</strong>：旧「意向单 + 人工确认；不做实时扣库存；不对接 PMS」（1.3、1.4、4.2、4.2.1）→ 新「按酒店配置 接入模式：<code>PMS直连</code>（下单成功即实时锁房，前台看板）/ <code>意向单</code>（人工确认兜底），两者并存」。</li>
+<li><strong>支付</strong>：微信支付 MCP、支付宝 MCP 作为酒店子线的支付环节；所有支付都是目的地本地支付。「AI 不代付，由用户本人确认支付」是本文沿用 3.1.1 / 16.1.2「AI 不付款」的推断。</li>
+<li><strong>门票</strong>：新增子线，厦门本地景区门票、直接入园，不属于主线；供应渠道待确认。</li>
+<li><strong>自驾导航</strong>：目的地服务，范围内子线，走高德 MCP。</li>
+<li><strong>范围</strong>：只做厦门目的地闭环，不订机票、动车 / 高铁（1.4、1.6）。</li>
+<li><strong>未改动</strong>：3.1.1 / 第 16 节「AI 不付款、不下单、不改单」只针对私人定制交接，保持不变；<code>PMS直连</code> 模式下「下单成功即锁房」与 4.2.1 原有「涉及支付和下单的节点必须人工确认」之间，本文理解为「由用户本人确认下单和支付」即满足确认要求（推断，待确认）。</li>
 </ul>
 <h3 id="s15-open">子线待确认清单（来自 <code>private-customization-spec.md</code> §13「待确认与限制」） </h3>
 

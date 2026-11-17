@@ -38,8 +38,8 @@
 6. 视频教训落地（视频《Wander with Mira》）
 7. 离线部分：知识运营管道 + 反馈收集智能体【子线】
    - 另见 `writing-agent-spec.md`：写作智能体（离线，与反馈收集智能体同级）【子线】
-8. 评测集（评测为一等公民）与数据质量门禁（含 8.3 子线评测、8.4 本次新增设计验收标准）
-9. 失败模式目录（含子线组件）
+8. 评测集（评测为一等公民）与数据质量门禁（含 8.3 子线评测、8.4 本次新增设计验收标准、8.5 故障注入与降级验收）
+9. 失败模式目录（含子线组件；含稳定 test_id）
 10. 成本：三套方案 + 月成本模型 + 10.3 成本与时延（写作智能体）【子线】
 11. 合规清单
 12. 库存即服务商业层
@@ -608,14 +608,27 @@ LangGraph 是骨架，dsh「一切皆插件」是血肉。工具、循环子图�
 - 上线前只用模拟请求验证计时和分母，模拟结果不写入生产达成率。上线后按完整自然月滚动监测，未结束的月份不提前记满分。
 - 这不改变告诉用户的个案承诺，也不改变 7.3 的 24 小时。16.5 里夜间和节假日是否同样适用仍待决策；在该决定作出前，这些请求计入分母、不自动豁免。
 
+### 8.5 故障注入与降级验收
+
+这是设计验收规范，不是已经执行的测试，也没有「自动测试已通过」的记录。数字门槛仍以 8.2、8.4 为准，本节不改那些数字。
+
+- 数据集 `ds-ch9-fault` 的每条样本使用第 9 章矩阵里的一个 `test_id`。矩阵有而数据集没有，或数据集有而矩阵没有，都不算通过。某个 `test_id` 无样本，不算 pass。
+- 判 pass 要核对期望结构、`status`、`error_class`、`retryable` 和禁止输出，不只匹配一段文本或 HTTP 200。
+- 正对照是十个 `FM-*-ok`。它们必须给出第 9 章「正常」列的结构，不得整组拒答就算通过。此条只约束这套降级验证的正对照。
+- 降级不得省掉来源追溯、用户同意和人工确认。酒店超时不得把缓存价放进当前报价。餐厅空结果不得把未核实隐藏点写成正式推荐。
+- 酒店查询、餐厅查询、高德 MCP、规划子图、讲解子图的 `timeout` 与 `upstream`：虚拟时钟未满 1000 毫秒不得第二次调用；到点只再调用一次；第二次失败才降级。不得再叠一层重试。其余组件的样本要断言没有插入这 1 秒工具重试。
+- 限流样本若配置了长于 1 秒的服务端等待，要断言不会在 1 秒时抢跑；超过本次 deadline 则降级。等待值来自配置。
+
 ---
 
-## 9. 失败模式目录（每个组件四种返回）
+## 9. 失败模式目录
+
+下表保留十个组件的正常、超时、空结果、非法输入。只有酒店查询的超时格、餐厅查询的空结果格按本次口径改写，其余格子的语义不动。标【子线】的行仍来自 `private-customization-spec.md` §11「失败模式」（@ `006b093`）。本节是设计规格，不是已经跑过的测试。
 
 | 组件 | 正常 | 超时 | 空结果 | 非法输入 |
 |---|---|---|---|---|
-| 酒店查询 | 房型列表 | 缓存价 + `partial` | 最近 3 家 + `no_exact_match` | 错误码 + 提示 |
-| 餐厅查询 | 自建库结果 | 外部兜底 | 隐藏点建议 | 驳回 |
+| 酒店查询 | 房型列表 | 不返回缓存报价；价格与库存待实时确认，并给重查或降级；`partial` | 最近 3 家 + `no_exact_match` | 错误码 + 提示 |
+| 餐厅查询 | 自建库结果 | 外部兜底 | 正式库未找到，追问或合规外检；未核实隐藏点不是正式推荐 | 驳回 |
 | 高德 MCP | 路径折线 | 重试 1 次后降级 | 空路径 | 坐标错误 |
 | 规划子图 | 2–3 套 JSON | 降级为简单模板 | 提示补充偏好 | 槽位不全 |
 | 讲解子图 | 语音 + 图片 | 缓存讲解 | 「暂无档案」 | 定位失败 |
@@ -625,9 +638,55 @@ LangGraph 是骨架，dsh「一切皆插件」是血肉。工具、循环子图�
 | 照片收集【子线】 | 用户照片（一级 / 二级） | 提示稍后上传，可先出拼图 | 无照片 → 三级拼图兜底 | 格式不支持，跳过并提示 |
 | 回写订单系统【子线】 | 新版本落库 | 重试；规划子图继续用上一确认版本 | 无新版本，不更新 | 字段校验失败，驳回给顾问 |
 
-所有失败都必须打标签并记入 OTel 追踪片段。通用超时策略为 3 秒 + 重试 1 次 + 降级打标（见 4.3）。
+所有失败都打标签并记入 OTel 追踪片段。工具调用的超时仍是每次 3 秒（见 4.3）。具体再试一次的间隔见下面，不改 4.3 那一句的秒数和次数。
 
-标【子线】的行来自 `private-customization-spec.md` §11「失败模式」（@ `006b093`），v2 并入。
+**统一错误结构**
+
+失败返回至少含 `error_code`、`error_class`、`retryable`、`next_action`、`status`、`source`、`timestamp`、`trace_id`。`error_class` 只用 `timeout`、`empty`、`invalid`、`denied`、`ratelimit`、`upstream`、`stale`、`partial`。`status` 继续用已有的 `partial`、`no_exact_match`。没有来源或没有 timestamp 的硬信息不得标成已确认。
+
+**工具重试间隔**
+
+- 只用于酒店查询、餐厅查询、高德 MCP、规划子图、讲解子图中 `retryable=true` 的请求。每次调用超时仍是 3 秒。
+- 第一次失败或超时结束后，用单调时钟固定等待 1 秒，再重试一次。不立即重试，也不做指数退避。同一请求最多 2 次调用。等待从首次失败或超时结束起算。
+- 测试用虚拟时钟，不真实睡眠。
+- `invalid`、`denied` 以及其他 `retryable=false` 的请求，不等这 1 秒，也不重试。
+- 限流若带 Retry-After，或平台要求的等待长于 1 秒，遵守服务端时间，不得在 1 秒时抢先再请求。等待超过本次 deadline 就降级或改为稍后重试，不得无界等待。这个等待放在配置里，测试要能断言。
+- 超时和外部服务故障共用这一层预算，不得再叠一层重试。
+- 企业微信建联仍按表内 1 小时，照片上传不套 3 秒，订单回写不套这 1 秒。1 秒不是业务时限。回写若重试，必须幂等，同一确认版本不得写成第二笔订单。
+
+**两处兜底**
+
+- 酒店查询超时的返回和推荐卡都不含缓存报价。当前报价字段不填历史价格，也不作为实时推荐或下单依据。即使其他页面另有历史信息，也必须带原 timestamp 并标待实时确认，且不能放进当前报价字段；没有 timestamp 的不展示。本节不新增历史价格展示。价格和库存仍要实时校验。4.5「降级路径」与双源、4.2.2 的适用关系仍待协调，本次不写成已经协调。
+- 餐厅空结果：未核实隐藏点不写入行程。只有用户自己点选时，才可作为标明未核实的线索。不得无来源补推荐。
+
+**新增失败类**
+
+十个组件都要覆盖，见下面的 test_id，不只有一个样例。
+
+- `denied`：权限不足。`retryable=false`，不重试。
+- `ratelimit`：限流。按上面的服务端等待例外。
+- `upstream`：外部服务故障。五个工具组件按 1 秒后再试一次，第二次失败再走该组件的超时降级。交接摘要、状态页、企业微信、照片、回写不套这 1 秒。
+- `stale`：数据过期。不得把过期价格、库存或路线当作当前值，要重查。缺 timestamp 的不展示。
+- `partial`：部分成功。`status=partial`。已得到的字段保留来源和 timestamp；缺的硬信息留空或待确认，不编造。降级不取消同意和人工确认。
+
+**稳定 test_id**
+
+`FM-{组件}-{模式}`。组件：`hotel`、`dine`、`amap`、`plan`、`narr`、`hand`、`wecom`、`page`、`photo`、`order`。模式：`ok`、`timeout`、`empty`、`invalid`、`denied`、`ratelimit`、`upstream`、`stale`、`partial`。共 90 个，一一对应，没有别名。
+
+| 组件 | test_id |
+|---|---|
+| 酒店查询 | `FM-hotel-ok` `FM-hotel-timeout` `FM-hotel-empty` `FM-hotel-invalid` `FM-hotel-denied` `FM-hotel-ratelimit` `FM-hotel-upstream` `FM-hotel-stale` `FM-hotel-partial` |
+| 餐厅查询 | `FM-dine-ok` `FM-dine-timeout` `FM-dine-empty` `FM-dine-invalid` `FM-dine-denied` `FM-dine-ratelimit` `FM-dine-upstream` `FM-dine-stale` `FM-dine-partial` |
+| 高德 MCP | `FM-amap-ok` `FM-amap-timeout` `FM-amap-empty` `FM-amap-invalid` `FM-amap-denied` `FM-amap-ratelimit` `FM-amap-upstream` `FM-amap-stale` `FM-amap-partial` |
+| 规划子图 | `FM-plan-ok` `FM-plan-timeout` `FM-plan-empty` `FM-plan-invalid` `FM-plan-denied` `FM-plan-ratelimit` `FM-plan-upstream` `FM-plan-stale` `FM-plan-partial` |
+| 讲解子图 | `FM-narr-ok` `FM-narr-timeout` `FM-narr-empty` `FM-narr-invalid` `FM-narr-denied` `FM-narr-ratelimit` `FM-narr-upstream` `FM-narr-stale` `FM-narr-partial` |
+| 交接摘要生成 | `FM-hand-ok` `FM-hand-timeout` `FM-hand-empty` `FM-hand-invalid` `FM-hand-denied` `FM-hand-ratelimit` `FM-hand-upstream` `FM-hand-stale` `FM-hand-partial` |
+| 渠道建立（企业微信） | `FM-wecom-ok` `FM-wecom-timeout` `FM-wecom-empty` `FM-wecom-invalid` `FM-wecom-denied` `FM-wecom-ratelimit` `FM-wecom-upstream` `FM-wecom-stale` `FM-wecom-partial` |
+| 状态页 | `FM-page-ok` `FM-page-timeout` `FM-page-empty` `FM-page-invalid` `FM-page-denied` `FM-page-ratelimit` `FM-page-upstream` `FM-page-stale` `FM-page-partial` |
+| 照片收集 | `FM-photo-ok` `FM-photo-timeout` `FM-photo-empty` `FM-photo-invalid` `FM-photo-denied` `FM-photo-ratelimit` `FM-photo-upstream` `FM-photo-stale` `FM-photo-partial` |
+| 回写订单系统 | `FM-order-ok` `FM-order-timeout` `FM-order-empty` `FM-order-invalid` `FM-order-denied` `FM-order-ratelimit` `FM-order-upstream` `FM-order-stale` `FM-order-partial` |
+
+`ok` 的期望是上表「正常」列。`timeout`、`empty`、`invalid` 的期望是上表对应格。`FM-plan-timeout` 的期望是简单模板且 `status=partial`。`FM-hotel-timeout` 的当前报价字段不得是缓存价。五个工具组件的 `timeout` 和 `upstream` 还要断言：1 秒前不重发，到点只再调用一次，第二次失败才降级。
 
 ---
 
@@ -1292,6 +1351,8 @@ LangGraph 是骨架，dsh「一切皆插件」是血肉。工具、循环子图�
 - `gate_id`、`config_version`。
 - `scope`：受影响的候选产物、配置或数据版本；以及 `runner`：实际跑测试的执行器。
 - `dataset`、`threshold`：数据集和通过门槛。门槛引用第 8 章或第 14 章已有口径，不在这里新写数字。
+- 降级门禁还要有 `test_id`、`dataset`、`runner`、`ref`。`ref` 指向第 9 章的 `FM-*`。`dataset` 为 `ds-ch9-fault`，且必须覆盖第 9 章全部 90 个 ID。`runner` 读取 `retry_delay_ms`；本套件的值是 1000。断言用虚拟时钟上的调用时刻，不得把缺省当成立即重试。
+- 本套件只在 mock / sandbox 中跑，时钟和版本冻结。不得把故障注入真实订单、真实用户、电话、短信或生产数据。副作用只许出现在测试桩上。
 - `schedule`、`event`：周期或事件。例如每周红队，或合并事件。
 - `timeouts`、`retry`：超时和有限次重试。`retry` 必须是有限整数；未写时按 1 次。用尽仍不通过则失败，不得无限重试。
 - `dependencies`：须先通过的其他 `gate_id`。
@@ -1327,6 +1388,7 @@ LangGraph 是骨架，dsh「一切皆插件」是血肉。工具、循环子图�
 - 合并前：候选产物的全量门禁必须是 `PASSED`，否则阻断合并。这是合并前的阻塞条件。本智能体不执行合并，也不把提交写入 `main`。
 - 若合并提交的产物与合并前候选不同，必须对该合并提交再跑 `reacceptance_suite`。未通过则该产物走 `FAILED` 到 `ISOLATED`，不得进入 `READY_TO_RELEASE`。
 - 周期重跑只按配置发生。一次失败的重试次数受 `retry` 约束，不另开无限循环。
+- 已有的每周全量和合并前全量包含 `ds-ch9-fault`。这不改变上面的周期、合并阻断和再验。模拟规划超时时，断言返回简单模板且带 `partial`，并核对结构和报价字段，而不是只看文本。套件失败仍走本章的隔离、有限回滚和重验，对象是候选产物。不给真实用户打电话，也不对生产做真回滚。
 
 ### 18.5 隔离、回滚与发布边界
 
@@ -1337,7 +1399,7 @@ LangGraph 是骨架，dsh「一切皆插件」是血肉。工具、循环子图�
 
 ### 18.6 报告
 
-每份报告绑定：提交、`config_version`、数据集、模型与工具版本、`trace_id` 或 `run_id`、门禁状态、通过或失败的证据、失败原因，以及隔离、回滚、重验记录。报告自动写到 `report_destination`。进入 `FAILED`、`ISOLATED`、回滚失败或超时的，自动按 `owner` 推送。目的地和接收人都来自配置。本文不指定收件人，不调用外部通知接口，也不实际发送消息。
+每份报告绑定：提交、`config_version`、数据集、模型与工具版本、`trace_id` 或 `run_id`、门禁状态、通过或失败的证据、失败原因，以及隔离、回滚、重验记录。降级套件还要写上故障、期望结构和实际结构。写上这些字段不等于测试已经跑过。报告自动写到 `report_destination`。进入 `FAILED`、`ISOLATED`、回滚失败或超时的，自动按 `owner` 推送。目的地和接收人都来自配置。本文不指定收件人，不调用外部通知接口，也不实际发送消息。
 
 ### 18.7 扩展
 

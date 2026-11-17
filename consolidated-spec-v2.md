@@ -225,6 +225,7 @@ LangGraph 是骨架，dsh「一切皆插件」是血肉。工具、循环子图�
 - **不确定时人工接管**（建议）：模型不确定时主动说「我不确定」，并触发人工接管。尚未接通前，明确告诉用户正在等待，或人工不可用；不得说成人工已经接入。16.2 的交接触发仍按其原文，本条不表示该接管已经接通。
 - **Qwen4-Max 规格来源**：模型调用 ID 为 `qwen4-max`。阿里云百炼模型页写明：上下文长度 1,000,000 token；输入模态为文本、图像、视频，输出模态为文本；工具调用（Function Calling、并行工具调用）支持；结构化输出支持 JSON Object 与 JSON Schema；流式输出支持。百炼《流式输出》写明流式基于 Server-Sent Events（SSE）；该页未点名 `qwen4-max`。阿里云新闻稿的发布日期为 2026-11-16。本次打开的 Realtime API 概述模型表没有 `qwen4-max`，实时全模态列出的是 qwen3.8-omni-flash-realtime 等，因此没有核到 Qwen4-Max 的原生实时语音；实时语音继续 Omni Realtime。本条不写价格、默认采样参数或其他限流数字。来源：https://help.aliyun.com/zh/model-studio/qwen4-max ；https://www.alibabacloud.com/en/press-room/alibaba-unveils-qwen4-max ；https://help.aliyun.com/zh/model-studio/stream ；https://help.aliyun.com/zh/model-studio/realtime-api-overview 。查阅日期 2026-11-17。
 - **Qwen4-Max 评测计划**（建议）：采用前跑与「切换前评测」同一套固定场景，包括下单前追问、超预算处理。达到预设评分阈值才可采用；阈值待配置，本文不写分数。没有跑完或没有通过，不能用它替换生产模型。评测项包括 JSON Schema 合规、槽位硬约束遵守、异常输出；首字延迟和成本可以纳入，但本文不记载已测数值。Qwen4-Max 不能直接替代实时语音通道，实时语音仍走 Omni Realtime。
+- **全模型失效兜底**（推断，待确认）：当所有可用模型同时超时或失败时，系统不得只返回错误。须立即返回一份缓存的模板行程（如经典线路模板库中的对应模板），并明确告知用户"当前使用模板行程，模型恢复后可重新生成"，同时触发告警。模板行程仍须满足 3.1 行程质量硬标准中的硬性约束（如不含购物）。
 
 ### 4.2 工具层【顶层】
 
